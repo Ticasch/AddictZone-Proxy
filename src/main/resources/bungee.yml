@@ -1,0 +1,3 @@
+name: AddictZone-Proxy
+version: '${project.version}'
+main: net.tiam.addictzone_proxy.MainClass
