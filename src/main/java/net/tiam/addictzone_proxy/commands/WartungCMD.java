@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class WartungCMD extends Command {
     public WartungCMD() {
-        super("name");
+        super("wartung");
     }
     String prefix = MainClass.Prefix;
 

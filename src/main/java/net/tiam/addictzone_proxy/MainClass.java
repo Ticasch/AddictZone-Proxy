@@ -3,6 +3,7 @@ package net.tiam.addictzone_proxy;
 import com.google.common.collect.Iterables;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -71,6 +72,10 @@ public final class MainClass extends Plugin implements Listener {
             e.printStackTrace();
         }
     }
+    public void loadFiles() throws IOException {
+        config = ConfigurationProvider.getProvider(YamlConfiguration.class)
+                .load(new File(getDataFolder(), "config.yml"));
+    }
     public void saveFiles() throws IOException {
         ConfigurationProvider.getProvider(YamlConfiguration.class).save(config,
                 new File(getDataFolder(), "config.yml"));
@@ -96,8 +101,10 @@ public final class MainClass extends Plugin implements Listener {
         config.set("BungeeWartung.Status", wartung);
         saveFiles();
     }
-    public void loadFiles() throws IOException {
-        config = ConfigurationProvider.getProvider(YamlConfiguration.class)
-                .load(new File(getDataFolder(), "config.yml"));
+    public void onLogin2(LoginEvent e) {
+        if (wartung) {
+            e.setCancelled(true);
+            e.setCancelReason(kickmessage);
+        }
     }
 }
