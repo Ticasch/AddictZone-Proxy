@@ -7,18 +7,17 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.commands.*;
+import net.tiam.addictzone_proxy.listeners.JoinListener;
 
 import java.util.Collection;
 
-public final class MainClass extends Plugin implements Listener {
+public final class MainClass extends Plugin {
 
     public static String ServerName = "AddictZone";
     public static String Prefix = "§9§lAddictZone §8➜ §7";
     public static String NoPerm = "§7Dazu hast du keine Rechte!";
     public static String Line = "§8§m--------------------------------------------------";
-    public boolean wartung = true;
-    private Collection<? extends ProxiedPlayer> onlineplayer;
-    String kickmessage = "§9§lAddictZone §7- §6§lWartungen\n\n§7Unser Netzwerk befindet sich in §6Wartungsarbeiten§7.\n§7Wir werden bald wieder Erreichbar sein.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+    public static String kickmessage = "§9§lAddictZone §7- §6§lWartungen\n\n§7Unser Netzwerk befindet sich derzeit in der §cAufbauphase§7.\n§7Bei Fragen wende dich gerne an unseren §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
 
     public void onEnable() {
         registerCommands();
@@ -34,15 +33,11 @@ public final class MainClass extends Plugin implements Listener {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new KickCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PcCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PopCMD());
+        ProxyServer.getInstance().getPluginManager().registerListener(this,new JoinListener());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanScreenCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new PRCMD());
         //ProxyServer.getInstance().getPluginManager().registerCommand(this, new TeamChatCMD());
     }
-    @EventHandler
-    public void onLogin(ServerConnectEvent e) {
-        if (this.wartung && !e.getPlayer().hasPermission("addictzone.wartung.bypass")) {
-            e.setCancelled(true);
-            e.getPlayer()
-                    .disconnect(kickmessage);
-        } 
-    }
+
 }
 

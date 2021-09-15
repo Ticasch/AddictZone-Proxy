@@ -13,7 +13,7 @@ public class LobbyCMD extends Command {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer p = (ProxiedPlayer) sender;
-            p.sendMessage("a");
+            p.sendMessage(String.valueOf(ProxyServer.getInstance().getOnlineCount()));
         }
     }
 }
