@@ -18,7 +18,7 @@ public class TablistManager {
             e.printStackTrace();
         }
         String header = "\n§8» §9§lAddictZone §8«\n§7Spieler online: §b" + ProxyServer.getInstance().getOnlineCount() + "§7/§b" + slots + "\n";
-        String footer = "\n§9§lTeamSpeak: §bAddictZone.net\n§9§lDiscord: §b/Discord\n";
+        String footer = "\n§7TeamSpeak §8➜ §bAddictZone.net\n§7Discord §8➜ §b/Discord\n";
         p.setTabHeader((BaseComponent) new TextComponent(header), (BaseComponent) new TextComponent(footer));
     }
 }
