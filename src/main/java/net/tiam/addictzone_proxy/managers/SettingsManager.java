@@ -30,4 +30,28 @@ public class SettingsManager {
         }
         return this.fileBuilder.getInt("Ranked-Slots");
     }
+    public void setWartung(String uuid, boolean b) {
+        this.fileBuilder.setValue("Wartung.Status", b);
+        this.fileBuilder.save();
+    }
+    public boolean getWartung() {
+        return this.fileBuilder.getBoolean("Wartung.Status");
+    }
+    public void setBypass(String uuid, boolean b) {
+        this.fileBuilder.setValue(uuid, b);
+        this.fileBuilder.save();
+    }
+    public boolean getBypass(String uuid) {
+        return this.fileBuilder.getBoolean("Wartung.ByPass." + uuid);
+    }
+    public void setMOTD(String motd) {
+        this.fileBuilder.setValue("motd", motd);
+        this.fileBuilder.save();
+    }
+    public String getMOTD() {
+        if (this.fileBuilder.getString("motd") == null) {
+            return null;
+        }
+        return this.fileBuilder.getString("motd");
+    }
 }

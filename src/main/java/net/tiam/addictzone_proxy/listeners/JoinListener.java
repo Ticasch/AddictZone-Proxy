@@ -28,8 +28,7 @@ public class JoinListener implements Listener {
         } else {
             permCount = pCount;
         }
-        int OnlineCount = new AccountManager(e.getPlayer().getAddress().toString(), e.getPlayer().getUniqueId().toString()).getSameCount();
-        if (!e.getPlayer().hasPermission(servername + ".wartung.bypass") && new WartungManager(e.getPlayer().getUniqueId().toString()).getBypass() == false && new WartungManager(e.getPlayer().getUniqueId().toString()).getWartung() == true) {
+        if (!e.getPlayer().hasPermission(servername + ".wartung.bypass") && new SettingsManager().getBypass(e.getPlayer().getUniqueId().toString()) == false && new SettingsManager().getWartung() == true) {
             e.getPlayer().disconnect(MainClass.kickmessage);
             e.setCancelled(true);
             new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
@@ -81,8 +80,14 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onPing (ProxyPingEvent e) {
         ServerPing ping = e.getResponse();
+        int slots = 0;
+        try {
+            slots = new SettingsManager().getSlots();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         String motd = "§9§lAddictZone §7- §c§lAufbauphase\n§6§lBeta-Release: §b01.12.2021";
-        ping.setPlayers(new ServerPing.Players(512, ProxyServer.getInstance().getOnlineCount(), null));
+        ping.setPlayers(new ServerPing.Players(slots, ProxyServer.getInstance().getOnlineCount(), null));
         ping.setVersion(new ServerPing.Protocol("§6§lWartungen", ProxyServer.getInstance().getOnlineCount()));
         ping.setDescription(motd);
         e.setResponse(ping);
