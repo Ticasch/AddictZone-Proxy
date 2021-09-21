@@ -7,34 +7,46 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.MainClass;
-import net.tiam.addictzone_proxy.managers.AccountManager;
+import net.tiam.addictzone_proxy.managers.*;
 import net.tiam.addictzone_proxy.managers.SecurityManager;
-import net.tiam.addictzone_proxy.managers.TablistManager;
-import net.tiam.addictzone_proxy.managers.WartungManager;
 
 import java.io.IOException;
 
 public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(ServerConnectEvent e) throws IOException {
+        String ip = e.getPlayer().getAddress().toString();
+        String[] ips = ip.split(":");
+        String iptrim = ips[0].replace('.', '_');
         int pCount = permittedTimePermission(e.getPlayer());
         int permCount = 0;
+        String servername = MainClass.ServerName;
+        String fullservermsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Der Server ist voll.\n§7Versuche es Später erneut.";
+        String fullservermsgranked = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Der Server ist voll und alle zusaätzlichen §bRangslots.\n§7sind ebenfalls belegt. Versuche es Später erneut.";
         if (pCount == 0) {
             permCount = 1;
         } else {
             permCount = pCount;
         }
         int OnlineCount = new AccountManager(e.getPlayer().getAddress().toString(), e.getPlayer().getUniqueId().toString()).getSameCount();
-        if (!e.getPlayer().hasPermission("addictzone.wartung.bypass") && new WartungManager(e.getPlayer().getUniqueId().toString()).getBypass() == false && new WartungManager(e.getPlayer().getUniqueId().toString()).getWartung() == true) {
+        if (!e.getPlayer().hasPermission(servername + ".wartung.bypass") && new WartungManager(e.getPlayer().getUniqueId().toString()).getBypass() == false && new WartungManager(e.getPlayer().getUniqueId().toString()).getWartung() == true) {
             e.getPlayer().disconnect(MainClass.kickmessage);
             e.setCancelled(true);
+            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
+        }
+        if (ProxyServer.getInstance().getOnlineCount() > new SettingsManager().getSlots() && !e.getPlayer().hasPermission(servername + ".slots.bypass.rank") && !e.getPlayer().hasPermission(servername + ".slots.bypass")) {
+            e.getPlayer().disconnect(fullservermsg);
+            e.setCancelled(true);
+            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
+        } else if (ProxyServer.getInstance().getOnlineCount() > new SettingsManager().getRankedSlots() && !e.getPlayer().hasPermission(servername + ".slots.bypass")) {
+            e.getPlayer().disconnect(fullservermsgranked);
+            e.setCancelled(true);
+            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
         }
         for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
             new TablistManager().setTablist(all);
-        String ip = e.getPlayer().getAddress().toString();
-        String[] ips = ip.split(":");
-        String iptrim = ips[0].replace('.', '_');
-        String samecountmsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Du bist bereits mit §b" + new SecurityManager(iptrim).getIpCount() + " §7Accounts online.\n\nSolltest du der Meinung sein, dass dies ein\n§cFehler §7ist, melde dich im §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §7https://AddictZone.net/Forum";
+
+        String samecountmsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Du bist bereits mit §b" + new SecurityManager(iptrim).getIpCount() + " §7Accounts online.\n\nSolltest du der Meinung sein, dass dies ein\n§cFehler §7ist, melde dich im §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
         new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() + 1);
         if (new SecurityManager(iptrim).getIpCount() > permCount) {
             e.getPlayer().disconnect(samecountmsg);
@@ -43,6 +55,7 @@ public class JoinListener implements Listener {
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
                 new TablistManager().setTablist(all);
         }
+
     }
     @EventHandler
     public void onQuit(ServerDisconnectEvent e) throws IOException {
