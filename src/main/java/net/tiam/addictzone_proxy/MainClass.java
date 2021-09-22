@@ -39,6 +39,7 @@ public final class MainClass extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanScreenCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PRCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SetSlotsCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanCMD());
         ProxyServer.getInstance().getScheduler().schedule(this, () -> {
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
                 new TablistManager().setTablist(all);
