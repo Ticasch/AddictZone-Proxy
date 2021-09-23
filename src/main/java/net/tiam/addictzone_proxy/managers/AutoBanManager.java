@@ -10,14 +10,24 @@ public class AutoBanManager {
 
     public AutoBanManager () throws IOException {
     }
-    public void setIPStatus (String ip, boolean status) {
-        this.fileBuilder.setValue(ip, status);
+    public void setIPStatusBanned (String ip, boolean status) {
+        this.fileBuilder.setValue(ip + ".banned", status);
         this.fileBuilder.save();
     }
-    public boolean getIPStatus (String ip) {
-        if (this.fileBuilder.getString(ip) == null) {
+    public boolean getIPStatusBanned (String ip) {
+        if (this.fileBuilder.getString(ip + ".banned") == null) {
             return false;
         }
-        return this.fileBuilder.getBoolean(ip);
+        return this.fileBuilder.getBoolean(ip + ".banned");
+    }
+    public void setIpStatusMuted (String ip, boolean status) {
+        this.fileBuilder.setValue(ip + ".muted", status);
+        this.fileBuilder.save();
+    }
+    public boolean getIPStatusMuted (String ip) {
+        if (this.fileBuilder.getString(ip + ".muted") == null) {
+            return false;
+        }
+        return this.fileBuilder.getBoolean(ip + ".muted");
     }
 }

@@ -7,9 +7,11 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.commands.*;
+import net.tiam.addictzone_proxy.listeners.AsyncPlayerChatListener;
 import net.tiam.addictzone_proxy.listeners.JoinListener;
 import net.tiam.addictzone_proxy.managers.TablistManager;
 
+import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +42,8 @@ public final class MainClass extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PRCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SetSlotsCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new PMuteCMD());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new AsyncPlayerChatListener());
         ProxyServer.getInstance().getScheduler().schedule(this, () -> {
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
                 new TablistManager().setTablist(all);

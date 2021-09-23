@@ -30,6 +30,7 @@ public class JoinListener implements Listener {
             Ban_Expiry = "Permanent";
         }
         boolean banned = new BanManager(target.getName(), target.getUniqueId().toString()).getBanned();
+        boolean muted = new MuteManager(target.getName(), target.getUniqueId().toString()).getMuted();
         int pCount = permittedTimePermission(target.getUniqueId());
         int permCount = 0;
         String servername = MainClass.ServerName;
@@ -70,15 +71,28 @@ public class JoinListener implements Listener {
                 new TablistManager().setTablist(all);
         }
         if (banned == true) {
-            new AutoBanManager().setIPStatus(iptrim.replace("/", ""), true);
+            new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);
             e.setCancelled(true);
             target.disconnect(PBanKickMsg);
+            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
                 new TablistManager().setTablist(all);
         }
-        if (new AutoBanManager().getIPStatus(iptrim.replace("/", ""))) {
-            ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Pban " + target.getName() + " Account Liste");
-            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
+        if (new AutoBanManager().getIPStatusBanned(iptrim.replace("/", ""))) {
+            if (new BanManager(target.getName(), target.getUniqueId().toString()).getBanned() == false)
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Pban " + target.getName() + " Bannumgehung §7(§cAccount Liste§7)");
+            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
+                new TablistManager().setTablist(all);
+        }
+        if (new AutoBanManager().getIPStatusMuted(iptrim.replace("/", ""))) {
+            if (new BanManager(target.getName(), target.getUniqueId().toString()).getBanned() == false) {
+                if (new MuteManager(target.getName(), target.getUniqueId().toString()).getMuted() == false) {
+                    if (new AutoBanManager().getIPStatusBanned(iptrim.replace("/", "")) == false) {
+                        ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Pban " + target.getName() + " Muteumgehung §7(§cAccount Liste§7)");
+                        System.out.println("Muteumgehung");
+                    }
+                }
+            }
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
                 new TablistManager().setTablist(all);
         }

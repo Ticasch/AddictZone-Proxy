@@ -16,17 +16,14 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.UUID;
 
-public class PBanCMD extends Command {
+public class PMuteCMD extends Command {
     String prefix = MainClass.Prefix;
     String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     String line = MainClass.Line;
     String BANNER;
-    String Ban_Expiry = "";
-    String Ban_Banner = "";
-    String Ban_Reason = "";
-    public PBanCMD() {
-        super("pban", "", "ban", "permaban", "permban");
+    public PMuteCMD() {
+        super("pmute", "", "mute", "permamute", "permmute");
     }
     @Override
     public void execute(CommandSender c, String[] args) {
@@ -35,7 +32,7 @@ public class PBanCMD extends Command {
         } else {
             BANNER = servername;
         }
-        if (c.hasPermission(servername + ".ban.permanently")) {
+        if (c.hasPermission(servername + ".mute.permanently")) {
             if (args.length >= 2) {
                 String reason = "";
                 for (int i = 1; i != args.length; i++)
@@ -64,33 +61,40 @@ public class PBanCMD extends Command {
                 }
                 String[] ips = ip.split(":");
                 String iptrim = ips[0].replace('.', '_');
-                String Ban_Banner = BANNER;
-                String Ban_Reason = reason;
-                String Ban_Expiry = "Permanent";
-                String PBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + Ban_Banner + "\n§7Grund: §b" + Ban_Reason + "\n§7Dauer: §b" + Ban_Expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+                String Mute_Banner = BANNER;
+                String Mute_Reason = reason;
+                String Mute_Expiry = "Permanent";
                 try {
-                    if (new BanManager(target, targetUUID.toString()).getBanned() == true) {
-                        c.sendMessage(prefix + "Dieser Spieler ist bereits gebannt.");
+                    if (new MuteManager(target, targetUUID.toString()).getMuted() == true) {
+                        c.sendMessage(prefix + "Dieser Spieler ist bereits gemuted.");
                     } else {
                         try {
-                            new BanManager(target, targetUUID.toString()).setBanned(iptrim.replace("/", ""), reason, "never", BANNER, true, true, true);
-                            new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);
-                            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
+                            new MuteManager(target, targetUUID.toString()).setMuted(iptrim.replace("/", ""), reason, "never", BANNER, true, true, true);
+                            new AutoBanManager().setIpStatusMuted(iptrim.replace("/", ""), true);
                             c.sendMessage(prefix + "Du hast den Spieler §b" + target + " §7erfolgreich gebannt.");
                             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                                 new TablistManager().setTablist(all);
                                 if (all.hasPermission(servername + ".Ban.notify")) {
                                     all.sendMessage(line);
-                                    all.sendMessage(prefix + "§7Art: §4§lBann");
+                                    all.sendMessage(prefix + "§7Art: §c§lMute");
                                     all.sendMessage(prefix + "§7Name: §b" + target);
                                     all.sendMessage(prefix + "§7Von: §b" + BANNER);
                                     all.sendMessage(prefix + "§7Grund: §b" + reason);
                                     all.sendMessage(prefix + "§7Dauer: §bPermanent");
                                     all.sendMessage(line);
                                 }
-                                if (!(t == null)) {
-                                    t.disconnect(PBanKickMsg);
+                            }
+                            if (!(t == null)) {
+                                t.sendMessage(line);
+                                t.sendMessage(prefix + "Du wurdest soeben §c§lGemutet§7.");
+                                t.sendMessage(prefix + "§7Von: §b" + BANNER);
+                                t.sendMessage(prefix + "§7Grund: §b" + reason);
+                                if (new MuteManager(t.getName(), t.getUniqueId().toString()).getPermanently() == true) {
+                                    t.sendMessage(prefix + "§7Dauer: §bPermanent");
+                                } else {
+                                    t.sendMessage(prefix + "§7Dauer: §b" + Mute_Expiry);
                                 }
+                                t.sendMessage(line);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
