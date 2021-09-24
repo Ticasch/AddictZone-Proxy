@@ -22,6 +22,7 @@ public class AsyncPlayerChatListener implements Listener {
         String expiry = new MuteManager(p.getName(), p.getUniqueId().toString()).getExpiry();
         if (new MuteManager(p.getName(), p.getUniqueId().toString()).getMuted() == true && !p.hasPermission(servername + ".mute.bypass")) {
             if (!e.getMessage().startsWith("/")) {
+                System.out.println(prefix + "§7[§cMuted§7]§b " + e.getSender() + " §8➜ §7" + e.getMessage());
                 e.setCancelled(true);
                 p.sendMessage(line);
                 p.sendMessage(prefix + "Du bist derzeit §c§lGEMUTET§7.");
@@ -34,6 +35,7 @@ public class AsyncPlayerChatListener implements Listener {
                 }
                 p.sendMessage(line);
             } else if (e.getMessage().startsWith("/msg ") || e.getMessage().startsWith("/r ") || e.getMessage().startsWith("@C ")) {
+                System.out.println(prefix + "§7[§cMuted§7]§b " + e.getSender() + " §8➜ §7" + e.getMessage());
                 e.setCancelled(true);
                 p.sendMessage(line);
                 p.sendMessage(prefix + "Du bist derzeit §c§lGEMUTET§7.");

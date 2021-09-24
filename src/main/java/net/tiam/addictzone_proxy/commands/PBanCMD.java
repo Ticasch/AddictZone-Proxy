@@ -8,7 +8,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.tiam.addictzone_proxy.MainClass;
 import net.tiam.addictzone_proxy.managers.*;
-import net.tiam.addictzone_proxy.managers.SecurityManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -75,7 +74,6 @@ public class PBanCMD extends Command {
                         try {
                             new BanManager(target, targetUUID.toString()).setBanned(iptrim.replace("/", ""), reason, "never", BANNER, true, true, true);
                             new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);
-                            new SecurityManager(iptrim).setIpCount(new SecurityManager(iptrim).getIpCount() - 1);
                             c.sendMessage(prefix + "Du hast den Spieler §b" + target + " §7erfolgreich gebannt.");
                             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                                 new TablistManager().setTablist(all);

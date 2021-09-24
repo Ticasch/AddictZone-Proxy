@@ -38,7 +38,6 @@ public final class MainClass extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PcCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PopCMD());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new JoinListener());
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanScreenCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PRCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new SetSlotsCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanCMD());

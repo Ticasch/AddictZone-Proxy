@@ -8,7 +8,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.tiam.addictzone_proxy.MainClass;
 import net.tiam.addictzone_proxy.managers.*;
-import net.tiam.addictzone_proxy.managers.SecurityManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,7 +85,7 @@ public class PMuteCMD extends Command {
                             }
                             if (!(t == null)) {
                                 t.sendMessage(line);
-                                t.sendMessage(prefix + "Du wurdest soeben §c§lGemutet§7.");
+                                t.sendMessage(prefix + "Du wurdest soeben §c§lGEMUTET§7.");
                                 t.sendMessage(prefix + "§7Von: §b" + BANNER);
                                 t.sendMessage(prefix + "§7Grund: §b" + reason);
                                 if (new MuteManager(t.getName(), t.getUniqueId().toString()).getPermanently() == true) {
