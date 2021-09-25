@@ -13,6 +13,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 public class PBanCMD extends Command {
@@ -89,9 +91,9 @@ public class PBanCMD extends Command {
                                     all.sendMessage(prefix + "§7Dauer: §bPermanent");
                                     all.sendMessage(line);
                                 }
-                                if (!(t == null)) {
-                                    t.disconnect(PBanKickMsg);
-                                }
+                            }
+                            if (!(t == null)) {
+                                t.disconnect(PBanKickMsg);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

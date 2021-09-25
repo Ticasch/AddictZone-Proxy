@@ -6,6 +6,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,11 @@ public class FileBuilder {
         this.c.set(ValuePath, Value);
         return this;
     }
+
+    public Collection<String> getKeys() {
+        return this.c.getKeys();
+    }
+
     public boolean exist() {
         return this.f.exists();
     }
