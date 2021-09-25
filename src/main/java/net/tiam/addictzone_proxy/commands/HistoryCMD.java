@@ -3,15 +3,17 @@ package net.tiam.addictzone_proxy.commands;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.ItemSerializer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.tiam.addictzone_proxy.MainClass;
-import net.tiam.addictzone_proxy.managers.HistoryManager;
+import net.tiam.addictzone_proxy.managers.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,6 +66,38 @@ public class HistoryCMD extends Command {
         } else if (args.length == 2) {
             String target = String.valueOf(args[0]);
             UUID targetUUID = getUUIDFromName(target);
+            ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
+            String ip = "";
+            if (t == null) {
+                try {
+                    if (new IPManager(targetUUID.toString(), target).getIP() == null) {
+                        ip = "0.0.0.0";
+                    } else {
+                        ip = new IPManager(targetUUID.toString(), target).getIP();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ip = t.getAddress().toString();
+            }
+            if (targetUUID == null) {
+                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
+                return;
+            }
+            String[] ips = ip.split(":");
+            String iptrim = ips[0].replace('.', '_').replace("/", "");
+            try {
+                if (new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
+                    new MuteManager(target, targetUUID.toString()).setMutedStatus(false);
+                    new AutoBanManager().setIpStatusMuted(iptrim, false);
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
+                }
+                if (new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
+                    new BanManager(target, targetUUID.toString()).setBannedStatus(false);
+                    new AutoBanManager().setIPStatusBanned(iptrim, false);
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                }
             try {
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 if (Integer.parseInt(args[1]) <= actuallyCount) {
@@ -95,7 +129,10 @@ public class HistoryCMD extends Command {
                 e.printStackTrace();
             }
 
-        } else {
+        } catch (IOException e) {
+                e.printStackTrace();
+            }
+            } else {
             c.sendMessage(prefix + "Benutze: §b/History §7<§bSpieler§7>");
         }
 

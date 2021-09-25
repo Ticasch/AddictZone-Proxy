@@ -78,12 +78,17 @@ public class UnBanCMD extends Command {
                         for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                             if(all.hasPermission(servername + ".ban.Notify")) {
                                 all.sendMessage(line);
-                                all.sendMessage(prefix + "§7Art: §a§lUNBANN");
+                                all.sendMessage(prefix + "§7Art: §a§lUnbann");
                                 all.sendMessage(prefix + "§7Name: §b" + target);
                                 all.sendMessage(prefix + "§7Von: §b" + c.getName());
                                 all.sendMessage(line);
                             }
                         }
+                        System.out.println(line);
+                        System.out.println(prefix + "§7Art: §a§lUnbann");
+                        System.out.println(prefix + "§7Name: §b" + target);
+                        System.out.println(prefix + "§7Von: §b" + c.getName());
+                        System.out.println(line);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

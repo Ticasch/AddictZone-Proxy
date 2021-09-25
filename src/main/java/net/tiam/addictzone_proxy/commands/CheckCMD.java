@@ -34,46 +34,60 @@ public class CheckCMD extends Command {
             String target = args[0];
             ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
             UUID targetUUID = getUUIDFromName(target);
-            String ip = t.getAddress().getHostName().toString();
+            String ip = "";
+            if (t == null) {
+                try {
+                    if (new IPManager(targetUUID.toString(), target).getIP() == null) {
+                        ip = "0.0.0.0";
+                    } else {
+                        ip = new IPManager(targetUUID.toString(), target).getIP();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ip = t.getAddress().toString();
+            }
+            if (targetUUID == null) {
+                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
+                return;
+            }
             String[] ips = ip.split(":");
             String iptrim = ips[0].replace('.', '_').replace("/", "");
             try {
-                if (new MuteManager(t.getName(), t.getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(t.getName(), t.getUniqueId().toString()).getExpiryLong() > 0 && new MuteManager(t.getName(), t.getUniqueId().toString()).getPermanently() == false) {
-                    new MuteManager(t.getName(), t.getUniqueId().toString()).setMutedStatus(false);
+                if (new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
+                    new MuteManager(target, targetUUID.toString()).setMutedStatus(false);
                     new AutoBanManager().setIpStatusMuted(iptrim, false);
-                    new HistoryManager(t.getName(), t.getUniqueId().toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
-                    return;
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
                 }
-                if (new BanManager(t.getName(), t.getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(t.getName(), t.getUniqueId().toString()).getExpiryLong() > 0 && new BanManager(t.getName(), t.getUniqueId().toString()).getPermanently() == false) {
-                    new BanManager(t.getName(), t.getUniqueId().toString()).setBannedStatus(false);
+                if (new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
+                    new BanManager(target, targetUUID.toString()).setBannedStatus(false);
                     new AutoBanManager().setIPStatusBanned(iptrim, false);
-                    new HistoryManager(t.getName(), t.getUniqueId().toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                }
+                if (new BanManager(target, targetUUID.toString()).getBanned() == false && new MuteManager(target, targetUUID.toString()).getMuted() == false) {
+                    c.sendMessage(prefix + "Dieser Spieler ist derzeit nicht bestraft.");
                     return;
                 }
-                    if (new BanManager(target, targetUUID.toString()).getBanned() == false && new MuteManager(target, targetUUID.toString()).getMuted() == false) {
-                        c.sendMessage(prefix + "Dieser Spieler ist derzeit nicht bestraft.");
-                        return;
-                    }
-                    c.sendMessage(line);
-                    c.sendMessage(prefix + "Strafstatus von: §b" + target);
-                    if (new MuteManager(target, targetUUID.toString()).getMuted() == true) {
-                        c.sendMessage(prefix + "Art: §c§lMute");
-                        c.sendMessage(prefix + "Name: §b" + target);
-                        c.sendMessage(prefix + "Von: §b" + new MuteManager(target, targetUUID.toString()).getBanner());
-                        c.sendMessage(prefix + "Grund: §b" + new MuteManager(target, targetUUID.toString()).getReason());
-                        c.sendMessage(prefix + "Dauer: §b" + new MuteManager(target, targetUUID.toString()).getExpiry());
-                    }
-                    if (new MuteManager(target, targetUUID.toString()).getMuted() == true && new BanManager(target, targetUUID.toString()).getBanned() == true)
-                        c.sendMessage(prefix);
-                    if (new BanManager(target, targetUUID.toString()).getBanned() == true) {
-                        c.sendMessage(prefix + "Art: §4§lBann");
-                        c.sendMessage(prefix + "Name: §b" + target);
-                        c.sendMessage(prefix + "Von: §b" + new BanManager(target, targetUUID.toString()).getBanner());
-                        c.sendMessage(prefix + "Grund: §b" + new BanManager(target, targetUUID.toString()).getReason());
-                        c.sendMessage(prefix + "Dauer: §b" + new BanManager(target, targetUUID.toString()).getExpiry());
-                    }
-                    c.sendMessage(line);
-
+                c.sendMessage(line);
+                c.sendMessage(prefix + "Strafstatus von: §b" + target);
+                if (new MuteManager(target, targetUUID.toString()).getMuted() == true) {
+                    c.sendMessage(prefix + "Art: §c§lMute");
+                    c.sendMessage(prefix + "Name: §b" + target);
+                    c.sendMessage(prefix + "Von: §b" + new MuteManager(target, targetUUID.toString()).getBanner());
+                    c.sendMessage(prefix + "Grund: §b" + new MuteManager(target, targetUUID.toString()).getReason());
+                    c.sendMessage(prefix + "Dauer: §b" + new MuteManager(target, targetUUID.toString()).getExpiry());
+                }
+                if (new MuteManager(target, targetUUID.toString()).getMuted() == true && new BanManager(target, targetUUID.toString()).getBanned() == true)
+                    c.sendMessage(prefix);
+                if (new BanManager(target, targetUUID.toString()).getBanned() == true) {
+                    c.sendMessage(prefix + "Art: §4§lBann");
+                    c.sendMessage(prefix + "Name: §b" + target);
+                    c.sendMessage(prefix + "Von: §b" + new BanManager(target, targetUUID.toString()).getBanner());
+                    c.sendMessage(prefix + "Grund: §b" + new BanManager(target, targetUUID.toString()).getReason());
+                    c.sendMessage(prefix + "Dauer: §b" + new BanManager(target, targetUUID.toString()).getExpiry());
+                }
+                c.sendMessage(line);
             } catch (IOException e) {
                 e.printStackTrace();
             }

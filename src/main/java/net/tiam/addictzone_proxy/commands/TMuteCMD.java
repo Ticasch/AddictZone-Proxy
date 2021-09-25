@@ -83,8 +83,8 @@ public class TMuteCMD extends Command {
                 long banexpiry = System.currentTimeMillis() + longExpiry;
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 int newCount = actuallyCount + 1;
-                if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * 1000 * 60 * 60 * 24 < longExpiry) {
-                    c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage bannen.");
+                if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
+                    c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage muten.");
                     return;
                 }
                 new MuteManager(target, targetUUID.toString()).setMuted(iptrim, reason, expiry, banexpiry, MUTER, true, false);
@@ -101,6 +101,13 @@ public class TMuteCMD extends Command {
                         all.sendMessage(line);
                     }
                 }
+                System.out.println(line);
+                System.out.println(prefix + "§7Art: §c§lMute");
+                System.out.println(prefix + "§7Name: §b" + target);
+                System.out.println(prefix + "§7Von: §b" + MUTER);
+                System.out.println(prefix + "§7Grund: §b" + reason);
+                System.out.println(prefix + "§7Dauer: §b" + expiry);
+                System.out.println(line);
                 if (!(t == null)) {
                     t.sendMessage(line);
                     t.sendMessage(prefix + "Du wurdest soeben §c§lGEMUTET§7.");
@@ -131,7 +138,7 @@ public class TMuteCMD extends Command {
         ProxiedPlayer p = ProxyServer.getInstance().getPlayer(player);
         String servername = MainClass.ServerName;
         for (int i = 1000; i >= 0; i--) {
-            if (p.hasPermission(servername + ".Tempban.time." + i)) {
+            if (p.hasPermission(servername + ".Tempmute.time." + i)) {
                 return i;
             }
         }

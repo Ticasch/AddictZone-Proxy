@@ -92,6 +92,13 @@ public class PBanCMD extends Command {
                                     all.sendMessage(line);
                                 }
                             }
+                            System.out.println(line);
+                            System.out.println(prefix + "§7Art: §4§lBann");
+                            System.out.println(prefix + "§7Name: §b" + target);
+                            System.out.println(prefix + "§7Von: §b" + BANNER);
+                            System.out.println(prefix + "§7Grund: §b" + reason);
+                            System.out.println(prefix + "§7Dauer: §b" + Ban_Expiry);
+                            System.out.println(line);
                             if (!(t == null)) {
                                 t.disconnect(PBanKickMsg);
                             }

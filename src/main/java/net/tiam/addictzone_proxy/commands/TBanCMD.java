@@ -88,7 +88,7 @@ public class TBanCMD extends Command {
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 int newCount = actuallyCount + 1;
                 String TBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + BANNER + "\n§7Grund: §b" + reason + "\n§7Dauer: §b" + expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
-                if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * 1000 * 60 * 60 * 24 < longExpiry) {
+                if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
                     c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage bannen.");
                     return;
                 }
@@ -106,6 +106,13 @@ public class TBanCMD extends Command {
                         all.sendMessage(line);
                     }
                 }
+                System.out.println(line);
+                System.out.println(prefix + "§7Art: §4§lBann");
+                System.out.println(prefix + "§7Name: §b" + target);
+                System.out.println(prefix + "§7Von: §b" + BANNER);
+                System.out.println(prefix + "§7Grund: §b" + reason);
+                System.out.println(prefix + "§7Dauer: §b" + expiry);
+                System.out.println(line);
                 if (!(t == null)) {
                     t.disconnect(TBanKickMsg);
                 }

@@ -86,6 +86,13 @@ public class PMuteCMD extends Command {
                                     all.sendMessage(line);
                                 }
                             }
+                            System.out.println(line);
+                            System.out.println(prefix + "§7Art: §c§lMute");
+                            System.out.println(prefix + "§7Name: §b" + target);
+                            System.out.println(prefix + "§7Von: §b" + BANNER);
+                            System.out.println(prefix + "§7Grund: §b" + reason);
+                            System.out.println(prefix + "§7Dauer: §b" + Mute_Expiry);
+                            System.out.println(line);
                             if (!(t == null)) {
                                 t.sendMessage(line);
                                 t.sendMessage(prefix + "Du wurdest soeben §c§lGEMUTET§7.");
