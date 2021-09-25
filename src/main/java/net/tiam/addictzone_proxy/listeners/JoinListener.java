@@ -16,7 +16,7 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(ServerConnectEvent e) throws IOException {
         ProxiedPlayer target = ProxyServer.getInstance().getPlayer(e.getPlayer().getUniqueId());
-        String ip = target.getAddress().toString();
+        String ip = target.getAddress().getHostName().toString();
         String[] ips = ip.split(":");
         String iptrim = ips[0].replace('.', '_');
         String Ban_IP = new BanManager(target.toString(), target.getUniqueId().toString()).getIp();
@@ -25,6 +25,10 @@ public class JoinListener implements Listener {
         String Ban_Expiry = "";
         if (new BanManager(target.getName(), target.getUniqueId().toString()).getPermanently() == true) {
             Ban_Expiry = "Permanent";
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+            Ban_Expiry = format.format(new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong());
         }
         boolean banned = new BanManager(target.getName(), target.getUniqueId().toString()).getBanned();
         boolean muted = new MuteManager(target.getName(), target.getUniqueId().toString()).getMuted();
@@ -39,7 +43,7 @@ public class JoinListener implements Listener {
                 if (all != player) {
                     accounts++;
                     if (accounts >= permittedAccountsPermission(target.getUniqueId())) {
-                        String samecountmsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Du bist bereits mit §b" + accounts + " §7Accounts online.\n\nSolltest du der Meinung sein, dass dies ein\n§cFehler §7ist, melde dich im §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+                        String samecountmsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Du bist bereits mit §b" + accounts + " §7Account(s) online.\n\nSolltest du der Meinung sein, dass dies ein\n§cFehler §7ist, melde dich im §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
                         e.getPlayer().disconnect(samecountmsg);
                         e.setCancelled(true);
                     }
@@ -62,6 +66,12 @@ public class JoinListener implements Listener {
         new IPManager(target.getUniqueId().toString(), target.getName()).setName();
         new IPManager(target.getUniqueId().toString(), target.getName()).setIP(iptrim.replace("/", ""));
         if (banned == true) {
+            if (new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong() > 0 && new BanManager(target.getName(), target.getUniqueId().toString()).getPermanently() == false) {
+                new BanManager(target.getName(), target.getUniqueId().toString()).setBannedStatus(false);
+                new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), false);
+                new HistoryManager(target.getName(), target.getUniqueId().toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(target.getName(), target.getUniqueId().toString()).getActuallyCount());
+                return;
+            }
             new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);
             e.setCancelled(true);
             target.disconnect(PBanKickMsg);

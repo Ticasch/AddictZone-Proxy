@@ -68,7 +68,10 @@ public class PMuteCMD extends Command {
                         c.sendMessage(prefix + "Dieser Spieler ist bereits gemuted.");
                     } else {
                         try {
-                            new MuteManager(target, targetUUID.toString()).setMuted(iptrim.replace("/", ""), reason, "never", BANNER, true, true, true);
+                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                            int newCount = actuallyCount + 1;
+                            new MuteManager(target, targetUUID.toString()).setMuted(iptrim.replace("/", ""), reason, "Permanent", -1, BANNER, true, true);
+                            new HistoryManager(target, targetUUID.toString()).setHistory(iptrim.replace("", ""), reason, Mute_Expiry, -1 , Mute_Banner, "nobody", "§c§lMute", false, String.valueOf(newCount));
                             new AutoBanManager().setIpStatusMuted(iptrim.replace("/", ""), true);
                             c.sendMessage(prefix + "Du hast den Spieler §b" + target + " §7erfolgreich gebannt.");
                             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
@@ -88,11 +91,7 @@ public class PMuteCMD extends Command {
                                 t.sendMessage(prefix + "Du wurdest soeben §c§lGEMUTET§7.");
                                 t.sendMessage(prefix + "§7Von: §b" + BANNER);
                                 t.sendMessage(prefix + "§7Grund: §b" + reason);
-                                if (new MuteManager(t.getName(), t.getUniqueId().toString()).getPermanently() == true) {
-                                    t.sendMessage(prefix + "§7Dauer: §bPermanent");
-                                } else {
-                                    t.sendMessage(prefix + "§7Dauer: §b" + Mute_Expiry);
-                                }
+                                t.sendMessage(prefix + "§7Dauer: §b" + Mute_Expiry);
                                 t.sendMessage(line);
                             }
                         } catch (IOException e) {
@@ -103,7 +102,7 @@ public class PMuteCMD extends Command {
                     e.printStackTrace();
                 }
             } else {
-                c.sendMessage(prefix + "Benutze: §b/Pban §7<§bSpieler§7> <§bGrund§7>");
+                c.sendMessage(prefix + "Benutze: §b/Mute §7<§bSpieler§7> <§bGrund§7>");
             }
         } else {
             c.sendMessage(noperm);

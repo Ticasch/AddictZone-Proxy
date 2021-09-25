@@ -9,8 +9,10 @@ import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.commands.*;
 import net.tiam.addictzone_proxy.listeners.AsyncPlayerChatListener;
 import net.tiam.addictzone_proxy.listeners.JoinListener;
+import net.tiam.addictzone_proxy.managers.BanManager;
 import net.tiam.addictzone_proxy.managers.TablistManager;
 
+import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -43,9 +45,17 @@ public final class MainClass extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PBanCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PMuteCMD());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new AsyncPlayerChatListener());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TBanCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new YouTuberCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new CheckCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new HistoryCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new UnBanCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new UnMuteCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TMuteCMD());
         ProxyServer.getInstance().getScheduler().schedule(this, () -> {
-            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
+            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                 new TablistManager().setTablist(all);
+            }
         }, 0, 1, TimeUnit.SECONDS);
         //ProxyServer.getInstance().getPluginManager().registerCommand(this, new TeamChatCMD());
     }

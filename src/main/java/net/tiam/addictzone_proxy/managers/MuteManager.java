@@ -14,15 +14,28 @@ public class MuteManager {
         this.name = name;
         this.uuid = uuid;
     }
-    public void setMuted(String ip, String reason, String expiry, String muter, boolean ipmuted, boolean muted,  boolean permanently) {
+    public void setMuted(String ip, String reason, String expiry, long expirylong, String muter, boolean muted,  boolean permanently) {
         this.fileBuilder.setValue(this.uuid + ".Muted", muted);
         this.fileBuilder.setValue(this.uuid + ".Name", this.name);
         this.fileBuilder.setValue(this.uuid + ".Ip", ip);
         this.fileBuilder.setValue(this.uuid + ".reason", reason);
         this.fileBuilder.setValue(this.uuid + ".expiry", expiry);
+        this.fileBuilder.setValue(this.uuid + ".ExpiryLong", expirylong);
+        this.fileBuilder.setValue(this.uuid + ".mutedate", System.currentTimeMillis());
         this.fileBuilder.setValue(this.uuid + ".muter", muter);
         this.fileBuilder.setValue(this.uuid + ".permanently", permanently);
         this.fileBuilder.save();
+    }
+
+    public void setMutedStatus (boolean status) {
+        this.fileBuilder.setValue(this.uuid + ".Muted", status);
+        this.fileBuilder.save();
+    }
+    public long getExpiryLong() {
+        if (this.fileBuilder.getString(this.uuid) == null) {
+            return 0;
+        }
+        return this.fileBuilder.getLong(this.uuid + ".ExpiryLong");
     }
     public boolean getMuted() {
         if (this.fileBuilder.getString(this.uuid) == null) {
@@ -71,5 +84,8 @@ public class MuteManager {
             return false;
         }
         return this.fileBuilder.getBoolean(this.uuid + ".Ip.Status." + this.getIp());
+    }
+    public long getMuteDate() {
+        return this.fileBuilder.getLong(this.uuid + ".mutedate");
     }
 }

@@ -55,7 +55,7 @@ public class PBanCMD extends Command {
                         e.printStackTrace();
                     }
                 } else {
-                    ip = t.getAddress().toString();
+                    ip = t.getAddress().getHostName().toString();
                 }
                 if (targetUUID == null) {
                     c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
@@ -72,7 +72,10 @@ public class PBanCMD extends Command {
                         c.sendMessage(prefix + "Dieser Spieler ist bereits gebannt.");
                     } else {
                         try {
-                            new BanManager(target, targetUUID.toString()).setBanned(iptrim.replace("/", ""), reason, "never", BANNER, true, true, true);
+                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                            int newCount = actuallyCount + 1;
+                            new BanManager(target, targetUUID.toString()).setBanned(iptrim.replace("/", ""), reason, "never", -1, BANNER, true, true);
+                            new HistoryManager(target, targetUUID.toString()).setHistory(iptrim.replace("/", ""), reason, Ban_Expiry, -1, BANNER, "nobody", "§4§lBann", false, String.valueOf(newCount));
                             new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);
                             c.sendMessage(prefix + "Du hast den Spieler §b" + target + " §7erfolgreich gebannt.");
                             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
@@ -98,7 +101,7 @@ public class PBanCMD extends Command {
                     e.printStackTrace();
                 }
             } else {
-                c.sendMessage(prefix + "Benutze: §b/Pban §7<§bSpieler§7> <§bGrund§7>");
+                c.sendMessage(prefix + "Benutze: §b/Ban §7<§bSpieler§7> <§bGrund§7>");
             }
         } else {
             c.sendMessage(noperm);

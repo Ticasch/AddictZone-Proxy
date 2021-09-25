@@ -5,6 +5,9 @@ import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.MainClass;
+import net.tiam.addictzone_proxy.managers.AutoBanManager;
+import net.tiam.addictzone_proxy.managers.BanManager;
+import net.tiam.addictzone_proxy.managers.HistoryManager;
 import net.tiam.addictzone_proxy.managers.MuteManager;
 
 import java.io.IOException;
@@ -20,7 +23,15 @@ public class AsyncPlayerChatListener implements Listener {
         String muter = new MuteManager(p.getName(), p.getUniqueId().toString()).getBanner();
         String reason = new MuteManager(p.getName(), p.getUniqueId().toString()).getReason();
         String expiry = new MuteManager(p.getName(), p.getUniqueId().toString()).getExpiry();
+        String ip = e.getSender().getAddress().getHostName().toString();
+        String[] ips = ip.split(":");
+        String iptrim = ips[0].replace('.', '_').replace("/", "");
         if (new MuteManager(p.getName(), p.getUniqueId().toString()).getMuted() == true && !p.hasPermission(servername + ".mute.bypass")) {
+            if (new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong() > 0 && new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getPermanently() == false) {
+                new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).setMutedStatus(false);
+                new AutoBanManager().setIpStatusMuted(iptrim, false);
+                new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getActuallyCount());
+            }
             if (!e.getMessage().startsWith("/")) {
                 System.out.println(prefix + "§7[§cMuted§7]§b " + e.getSender() + " §8➜ §7" + e.getMessage());
                 e.setCancelled(true);
