@@ -70,7 +70,7 @@ public class KickCMD extends Command {
                         for (int i = 1; i != args.length; i++)
                             reason = reason + args[i] + " ";
                         reason = reason.replace('&', '§');
-                        String message = prefix + " §7- §c§lGEKICKT" + System.lineSeparator() + System.lineSeparator() + "§7Von: §b" + KICKER + System.lineSeparator() + "§7Grund: §b" + reason;
+                        String message = prefix + "§c§lGEKICKT" + System.lineSeparator() + System.lineSeparator() + "§7Von: §b" + KICKER + System.lineSeparator() + "§7Grund: §b" + reason;
                         if (c.hasPermission(servername + ".Kick")) {
                             if (target.hasPermission(servername + ".Kick.ignore")) {
                                 if (c.hasPermission(servername + ".Kick.ignore.bypass")) {

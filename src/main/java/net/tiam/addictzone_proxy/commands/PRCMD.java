@@ -30,7 +30,13 @@ public class PRCMD extends Command {
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b30 §7Sekunden.");
                     try {
-                        Thread.sleep(24000);
+                        Thread.sleep(19000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b10 §7Sekunden.");
+                    try {
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

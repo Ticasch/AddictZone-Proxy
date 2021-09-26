@@ -43,6 +43,10 @@ public class HistoryCMD extends Command {
         if (args.length == 1) {
             String target = String.valueOf(args[0]);
             UUID targetUUID = getUUIDFromName(target);
+            if (targetUUID == null) {
+                c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                return;
+            }
             try {
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 if (actuallyCount > 0) {
@@ -52,7 +56,7 @@ public class HistoryCMD extends Command {
                         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                         format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
                         String bandate = format.format(new Date(new HistoryManager(target, targetUUID.toString()).getBandate(i)));
-                        TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID.toString()).getType(i));
+                        TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID.toString()).getType(i) + " §7(§b" + i + "§7)");
                         info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " " + i));
                         c.sendMessage(info);
                     }
@@ -66,6 +70,10 @@ public class HistoryCMD extends Command {
         } else if (args.length == 2) {
             String target = String.valueOf(args[0]);
             UUID targetUUID = getUUIDFromName(target);
+            if (targetUUID == null) {
+                c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                return;
+            }
             ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
             String ip = "";
             if (t == null) {
@@ -91,12 +99,12 @@ public class HistoryCMD extends Command {
                 if (new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
                     new MuteManager(target, targetUUID.toString()).setMutedStatus(false);
                     new AutoBanManager().setIpStatusMuted(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
                 }
                 if (new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
                     new BanManager(target, targetUUID.toString()).setBannedStatus(false);
                     new AutoBanManager().setIPStatusBanned(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
                 }
             try {
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();

@@ -72,7 +72,7 @@ public class JoinListener implements Listener {
             if (new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong() > 0 && new BanManager(target.getName(), target.getUniqueId().toString()).getPermanently() == false) {
                 new BanManager(target.getName(), target.getUniqueId().toString()).setBannedStatus(false);
                 new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), false);
-                new HistoryManager(target.getName(), target.getUniqueId().toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(target.getName(), target.getUniqueId().toString()).getActuallyCount());
+                new HistoryManager(target.getName(), target.getUniqueId().toString()).settaken(true, servername + " §7- §cAutomatisch§7", new HistoryManager(target.getName(), target.getUniqueId().toString()).getActuallyCount());
                 return;
             }
             new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);

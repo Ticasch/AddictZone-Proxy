@@ -46,6 +46,12 @@ public class PBanCMD extends Command {
                 ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
                 UUID targetUUID = getUUIDFromName(target);
                 String ip = "";
+                if (t.hasPermission(servername + ".ban.bypass")) {
+                    if (!c.hasPermission(servername + ".ban.bypass.bypass")) {
+                        c.sendMessage(prefix + "Du kannst diesen Spieler nicht bannen.");
+                        return;
+                    }
+                }
                 if (t == null) {
                     try {
                         if (new IPManager(targetUUID.toString(), target).getIP() == null) {

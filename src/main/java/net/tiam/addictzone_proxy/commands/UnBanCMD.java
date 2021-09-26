@@ -80,14 +80,14 @@ public class UnBanCMD extends Command {
                                 all.sendMessage(line);
                                 all.sendMessage(prefix + "§7Art: §a§lUnbann");
                                 all.sendMessage(prefix + "§7Name: §b" + target);
-                                all.sendMessage(prefix + "§7Von: §b" + c.getName());
+                                all.sendMessage(prefix + "§7Von: §b" + UNBANNER);
                                 all.sendMessage(line);
                             }
                         }
                         System.out.println(line);
                         System.out.println(prefix + "§7Art: §a§lUnbann");
                         System.out.println(prefix + "§7Name: §b" + target);
-                        System.out.println(prefix + "§7Von: §b" + c.getName());
+                        System.out.println(prefix + "§7Von: §b" + UNBANNER);
                         System.out.println(line);
                     }
                 } catch (IOException e) {

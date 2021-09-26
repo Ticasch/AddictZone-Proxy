@@ -58,12 +58,12 @@ public class CheckCMD extends Command {
                 if (new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
                     new MuteManager(target, targetUUID.toString()).setMutedStatus(false);
                     new AutoBanManager().setIpStatusMuted(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
                 }
                 if (new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
                     new BanManager(target, targetUUID.toString()).setBannedStatus(false);
                     new AutoBanManager().setIPStatusBanned(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7(§cAutomatisch§7)", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
                 }
                 if (new BanManager(target, targetUUID.toString()).getBanned() == false && new MuteManager(target, targetUUID.toString()).getMuted() == false) {
                     c.sendMessage(prefix + "Dieser Spieler ist derzeit nicht bestraft.");
