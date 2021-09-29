@@ -27,8 +27,8 @@ public class AsyncPlayerChatListener implements Listener {
         String[] ips = ip.split(":");
         String iptrim = ips[0].replace('.', '_').replace("/", "");
         if (new MuteManager(p.getName(), p.getUniqueId().toString()).getMuted() == true && !p.hasPermission(servername + ".mute.bypass")) {
-            if (new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong() > 0 && new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getPermanently() == false) {
-                new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).setMutedStatus(false);
+            if ((new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong()) <= (System.currentTimeMillis()) && (new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong() > 0) && (new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getPermanently() == false)) {
+                new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).deleteMute();
                 new AutoBanManager().setIpStatusMuted(iptrim, false);
                 new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).settaken(true, servername + " §7- §cAutomatisch§7", new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getActuallyCount());
             }

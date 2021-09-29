@@ -46,12 +46,6 @@ public class PBanCMD extends Command {
                 ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
                 UUID targetUUID = getUUIDFromName(target);
                 String ip = "";
-                if (t.hasPermission(servername + ".ban.bypass")) {
-                    if (!c.hasPermission(servername + ".ban.bypass.bypass")) {
-                        c.sendMessage(prefix + "Du kannst diesen Spieler nicht bannen.");
-                        return;
-                    }
-                }
                 if (t == null) {
                     try {
                         if (new IPManager(targetUUID.toString(), target).getIP() == null) {
@@ -82,7 +76,7 @@ public class PBanCMD extends Command {
                         try {
                             int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                             int newCount = actuallyCount + 1;
-                            new BanManager(target, targetUUID.toString()).setBanned(iptrim.replace("/", ""), reason, "never", -1, BANNER, true, true);
+                            new BanManager(target, targetUUID.toString()).setBanned(iptrim.replace("/", ""), reason, Ban_Expiry, -1, BANNER, true, true);
                             new HistoryManager(target, targetUUID.toString()).setHistory(iptrim.replace("/", ""), reason, Ban_Expiry, -1, BANNER, "nobody", "§4§lBann", false, String.valueOf(newCount));
                             new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), true);
                             c.sendMessage(prefix + "Du hast den Spieler §b" + target + " §7erfolgreich gebannt.");

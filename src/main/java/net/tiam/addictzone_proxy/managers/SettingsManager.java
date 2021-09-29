@@ -30,28 +30,46 @@ public class SettingsManager {
         }
         return this.fileBuilder.getInt("Ranked-Slots");
     }
-    public void setWartung(String uuid, boolean b) {
+    public void setWartung(boolean b) {
         this.fileBuilder.setValue("Wartung.Status", b);
         this.fileBuilder.save();
     }
     public boolean getWartung() {
         return this.fileBuilder.getBoolean("Wartung.Status");
     }
-    public void setBypass(String uuid, boolean b) {
-        this.fileBuilder.setValue(uuid, b);
+    public void setBypass(String uuid, boolean bypass) {
+        this.fileBuilder.setValue("Wartung.ByPass." + uuid, bypass);
         this.fileBuilder.save();
     }
     public boolean getBypass(String uuid) {
         return this.fileBuilder.getBoolean("Wartung.ByPass." + uuid);
     }
-    public void setMOTD(String motd) {
-        this.fileBuilder.setValue("motd", motd);
+    public void setDefaultMOTD(String motd) {
+        this.fileBuilder.setValue("MOTD.Default", motd);
         this.fileBuilder.save();
     }
-    public String getMOTD() {
-        if (this.fileBuilder.getString("motd") == null) {
-            return null;
-        }
-        return this.fileBuilder.getString("motd");
+    public String getDefaultMOTD() {
+        return this.fileBuilder.getString("MOTD.Default");
+    }
+    public void setWartungMOTD(String motd) {
+        this.fileBuilder.setValue("MOTD.Wartung", motd);
+        this.fileBuilder.save();
+    }
+    public String getWartungMOTD() {
+        return this.fileBuilder.getString("MOTD.Wartung");
+    }
+    public void setDefaultVersion(String version) {
+        this.fileBuilder.setValue("Version.Default", version);
+        this.fileBuilder.save();
+    }
+    public String getDefaultVersion() {
+        return this.fileBuilder.getString("Version.Default");
+    }
+    public void setWartungVersion(String version) {
+        this.fileBuilder.setValue("Version.Wartung", version);
+        this.fileBuilder.save();
+    }
+    public String getWartungVersion() {
+        return this.fileBuilder.getString("Version.Wartung");
     }
 }

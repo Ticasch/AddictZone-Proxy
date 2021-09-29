@@ -96,16 +96,16 @@ public class HistoryCMD extends Command {
             String[] ips = ip.split(":");
             String iptrim = ips[0].replace('.', '_').replace("/", "");
             try {
-                if (new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
-                    new MuteManager(target, targetUUID.toString()).setMutedStatus(false);
-                    new AutoBanManager().setIpStatusMuted(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(t.getName(), t.getUniqueId().toString()).getActuallyCount());
-                }
-                if (new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
-                    new BanManager(target, targetUUID.toString()).setBannedStatus(false);
-                    new AutoBanManager().setIPStatusBanned(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
-                }
+                    if (new MuteManager(target, targetUUID.toString()).getMuted() && new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
+                        new MuteManager(target, targetUUID.toString()).deleteMute();
+                        new AutoBanManager().setIpStatusMuted(iptrim, false);
+                        new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                    }
+                    if (new BanManager(target, targetUUID.toString()).getBanned() && new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
+                        new BanManager(target, targetUUID.toString()).deleteBan();
+                        new AutoBanManager().setIPStatusBanned(iptrim, false);
+                        new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                    }
             try {
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 if (Integer.parseInt(args[1]) <= actuallyCount) {

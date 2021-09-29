@@ -28,7 +28,7 @@ public class UnMuteCMD extends Command {
 
     @Override
     public void execute(CommandSender c, String[] args) {
-        if(!(c.hasPermission(servername + ".Unmute"))) {
+        if (!(c.hasPermission(servername + ".Unmute"))) {
             c.sendMessage(noperm);
             return;
         }
@@ -38,59 +38,43 @@ public class UnMuteCMD extends Command {
             UNMUTER = servername;
         }
         if (args.length == 1) {
-            ProxiedPlayer t = ProxyServer.getInstance().getPlayer(args[0]);
-            String target = String.valueOf(args[0]);
-            UUID targetUUID = getUUIDFromName(target);
-            String ip = "";
-            if (t == null) {
-                try {
-                    if (new IPManager(targetUUID.toString(), target).getIP() == null) {
-                        ip = "0.0.0.0";
-                    } else {
-                        ip = new IPManager(targetUUID.toString(), target).getIP();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                String target = String.valueOf(args[0]);
+                UUID targetUUID = getUUIDFromName(target);
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
+                    return;
                 }
-            } else {
-                ip = t.getAddress().getHostName().toString();
-            }
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
-                return;
-            }
-            String[] ips = ip.split(":");
-            String iptrim = ips[0].replace('.', '_');
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
-            } else {
-                try {
-                    if (new MuteManager(target, targetUUID.toString()).getMuted() == false) {
-                        c.sendMessage(prefix + "Dieser Spieler ist nicht gemutet.");
-                    } else {
-                        int actuallyCount = 0 + new HistoryManager(target, targetUUID.toString()).getActuallyCount();
-                        c.sendMessage(prefix + "§7Du hast den Spieler §b" + target + " §7erfolgreich entmutet.");
-                        new MuteManager(target, targetUUID.toString()).setMutedStatus(false);
-                        new AutoBanManager().setIpStatusMuted(iptrim, false);
-                        new HistoryManager(target, targetUUID.toString()).settaken(true, UNMUTER, actuallyCount);
-                        for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
-                            if(all.hasPermission(servername + ".ban.Notify")) {
-                                all.sendMessage(line);
-                                all.sendMessage(prefix + "§7Art: §a§lUnmute");
-                                all.sendMessage(prefix + "§7Name: §b" + target);
-                                all.sendMessage(prefix + "§7Von: §b" + UNMUTER);
-                                all.sendMessage(line);
-                            }
+                String ip = new MuteManager(target, targetUUID.toString()).getIp();
+                String[] ips = ip.split(":");
+                String iptrim = ips[0].replace('.', '_');
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                } else if (new MuteManager(target, targetUUID.toString()).getMuted() == false) {
+                    c.sendMessage(prefix + "Dieser Spieler ist nicht gemutet.");
+                } else {
+                    int actuallyCount = 0 + new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                    c.sendMessage(prefix + "§7Du hast den Spieler §b" + target + " §7erfolgreich entmutet.");
+                    new MuteManager(target, targetUUID.toString()).deleteMute();
+                    new AutoBanManager().setIpStatusMuted(ip, false);
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, UNMUTER, actuallyCount);
+                    for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
+                        if (all.hasPermission(servername + ".ban.Notify")) {
+                            all.sendMessage(line);
+                            all.sendMessage(prefix + "§7Art: §a§lUnmute");
+                            all.sendMessage(prefix + "§7Name: §b" + target);
+                            all.sendMessage(prefix + "§7Von: §b" + UNMUTER);
+                            all.sendMessage(line);
                         }
-                        System.out.println(line);
-                        System.out.println(prefix + "§7Art: §a§lUnmute");
-                        System.out.println(prefix + "§7Name: §b" + target);
-                        System.out.println(prefix + "§7Von: §b" + UNMUTER);
-                        System.out.println(line);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println(line);
+                    System.out.println(prefix + "§7Art: §a§lUnmute");
+                    System.out.println(prefix + "§7Name: §b" + target);
+                    System.out.println(prefix + "§7Von: §b" + UNMUTER);
+                    System.out.println(line);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } else {
             c.sendMessage(prefix + "Benutze: §b/Unban §7<§bSpieler§7>");

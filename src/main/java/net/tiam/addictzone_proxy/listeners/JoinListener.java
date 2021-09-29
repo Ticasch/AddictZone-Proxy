@@ -19,7 +19,7 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(ServerConnectEvent e) throws IOException {
         ProxiedPlayer target = ProxyServer.getInstance().getPlayer(e.getPlayer().getUniqueId());
-        String ip = target.getAddress().getHostName().toString();
+        String ip = target.getAddress().getAddress().getHostAddress();
         String[] ips = ip.split(":");
         String iptrim = ips[0].replace('.', '_');
         String Ban_IP = new BanManager(target.toString(), target.getUniqueId().toString()).getIp();
@@ -68,9 +68,11 @@ public class JoinListener implements Listener {
             new TablistManager().setTablist(all);
         new IPManager(target.getUniqueId().toString(), target.getName()).setName();
         new IPManager(target.getUniqueId().toString(), target.getName()).setIP(iptrim.replace("/", ""));
+        new IPManager(target.getUniqueId().toString(), target.getName()).setFullIp(target.getAddress().toString());
+        new IPManager(target.getUniqueId().toString(), target.getName()).setHostIP(target.getAddress().getHostName());
         if (banned == true) {
             if (new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target.getName(), target.getUniqueId().toString()).getExpiryLong() > 0 && new BanManager(target.getName(), target.getUniqueId().toString()).getPermanently() == false) {
-                new BanManager(target.getName(), target.getUniqueId().toString()).setBannedStatus(false);
+                new BanManager(target.getName(), target.getUniqueId().toString()).deleteBan();
                 new AutoBanManager().setIPStatusBanned(iptrim.replace("/", ""), false);
                 new HistoryManager(target.getName(), target.getUniqueId().toString()).settaken(true, servername + " §7- §cAutomatisch§7", new HistoryManager(target.getName(), target.getUniqueId().toString()).getActuallyCount());
                 return;
@@ -127,9 +129,21 @@ public class JoinListener implements Listener {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        String motd = "§9§lAddictZone §7- §c§lAufbauphase\n§6§lBeta-Release: §b01.12.2021";
+        String motd = "";
+        String version = "";
+        try {
+            if (new SettingsManager().getWartung() == false) {
+                motd = new SettingsManager().getDefaultMOTD().replace("%n", System.lineSeparator());
+                version = new SettingsManager().getDefaultVersion().replace("%online/max%", "§b" + ProxyServer.getInstance().getOnlineCount() + "§7/§b" + new SettingsManager().getSlots());
+            } else {
+                motd = new SettingsManager().getWartungMOTD().replace("%n", System.lineSeparator());
+                version = new SettingsManager().getWartungVersion().replace("%online/max%", "§b" + ProxyServer.getInstance().getOnlineCount() + "§7/§b" + new SettingsManager().getSlots());
+            }
+        } catch (IOException exeption) {
+            exeption.printStackTrace();
+        }
         ping.setPlayers(new ServerPing.Players(slots, ProxyServer.getInstance().getOnlineCount(), null));
-        ping.setVersion(new ServerPing.Protocol("§6§lWartungen", ProxyServer.getInstance().getOnlineCount()));
+        ping.setVersion(new ServerPing.Protocol(version, ProxyServer.getInstance().getOnlineCount()));
         ping.setDescription(motd);
         e.setResponse(ping);
     }

@@ -53,6 +53,11 @@ public final class MainClass extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new UnMuteCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new TMuteCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new PSudoCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new WartungCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new MotdCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new VersionCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new BanListCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new MuteListCMD());
         ProxyServer.getInstance().getScheduler().schedule(this, () -> {
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                 new TablistManager().setTablist(all);

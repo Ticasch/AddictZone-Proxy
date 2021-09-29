@@ -14,7 +14,7 @@ public class YouTubeManager {
         this.uuid = uuid;
     }
     public void setYouTuber(boolean status, String link) {
-        this.fileBuilder.setValue(this.uuid + ".Status", true);
+        this.fileBuilder.setValue(this.uuid + ".Status", status);
         this.fileBuilder.setValue(this.uuid + ".Link" , link);
         this.fileBuilder.save();
     }

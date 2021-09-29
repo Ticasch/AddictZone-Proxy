@@ -4,6 +4,7 @@ import net.tiam.addictzone_proxy.utilities.FileBuilder;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -81,5 +82,22 @@ public class BanManager {
             return null;
         }
         return this.fileBuilder.getString(this.uuid + ".banner");
+    }
+    public ArrayList<String> getBannedUsers() {
+        ArrayList<String> list = new ArrayList<>(this.fileBuilder.getKeys());
+        return list;
+    }
+    public void deleteBan() {
+        this.fileBuilder.setValue(this.uuid + ".Banned", null);
+        this.fileBuilder.setValue(this.uuid + ".Name", null);
+        this.fileBuilder.setValue(this.uuid + ".Ip", null);
+        this.fileBuilder.setValue(this.uuid + ".reason", null);
+        this.fileBuilder.setValue(this.uuid + ".expiry", null);
+        this.fileBuilder.setValue(this.uuid + ".ExpiryLong", null);
+        this.fileBuilder.setValue(this.uuid + ".bandate", null);
+        this.fileBuilder.setValue(this.uuid + ".banner", null);
+        this.fileBuilder.setValue(this.uuid + ".permanently", null);
+        this.fileBuilder.setValue(this.uuid, null);
+        this.fileBuilder.save();
     }
 }

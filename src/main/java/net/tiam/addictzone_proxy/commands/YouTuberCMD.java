@@ -17,33 +17,37 @@ import java.util.UUID;
 public class YouTuberCMD extends Command {
 
     public  YouTuberCMD() {
-        super("youtuber", "", "yt");
+        super("youtuber");
     }
     String prefix = MainClass.Prefix;
     String noPerm = prefix + MainClass.NoPerm;
     String line = MainClass.Line;
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender c, String[] args) {
 
-        if(args.length != 1) {
-            sender.sendMessage(prefix + "Benutze §b/youtuber §7<§bSpieler§7>");
-        }else{
-            String uuid = getUUIDFromName(args[0]).toString();
+        if(args.length == 1) {
+            String target = String.valueOf(args[0]);
+            UUID targetUUID = getUUIDFromName(target);
+            if (targetUUID == null) {
+                c.sendMessage(new TextComponent(prefix + "Dieser Spieler ist kein YouTuber."));
+                return;
+            }
             try {
-                YouTubeManager youTubeManager = new YouTubeManager(uuid);
+                YouTubeManager youTubeManager = new YouTubeManager(targetUUID.toString());
                 if(!(youTubeManager.getYouTuber())) {
-                    sender.sendMessage(new TextComponent(prefix + "Dieser Spieler ist kein YouTuber."));
+                    c.sendMessage(new TextComponent(prefix + "Dieser Spieler ist kein YouTuber."));
                 }else{
-                    sender.sendMessage(line);
-                    sender.sendMessage(prefix + "§7Gelange hier zu dem YouTube-Kanal von §b"+args[0]+"§7:");
-                    sender.sendMessage(prefix);
-                    sender.sendMessage(prefix + "§b"+youTubeManager.getLink());
-                    sender.sendMessage(line);
+                    c.sendMessage(line);
+                    c.sendMessage(prefix + "YouTube von §b" + target + "§7:");
+                    c.sendMessage(prefix + "§b"+youTubeManager.getLink());
+                    c.sendMessage(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            c.sendMessage(prefix + "Benutze §b/Youtuber §7<§bSpieler§7>");
         }
     }
     public static UUID getUUIDFromName(String name){

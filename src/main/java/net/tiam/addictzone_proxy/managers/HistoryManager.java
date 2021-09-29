@@ -4,10 +4,7 @@ import net.tiam.addictzone_proxy.utilities.FileBuilder;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 public class HistoryManager {
 

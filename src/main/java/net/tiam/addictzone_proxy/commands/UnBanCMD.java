@@ -40,60 +40,42 @@ public class UnBanCMD extends Command {
             UNBANNER = servername;
         }
         if (args.length == 1) {
-            ProxiedPlayer t = ProxyServer.getInstance().getPlayer(args[0]);
-            String target = String.valueOf(args[0]);
-            UUID targetUUID = getUUIDFromName(target);
-            String ip = "";
-            if (t == null) {
                 try {
-                    if (new IPManager(targetUUID.toString(), target).getIP() == null) {
-                        ip = "0.0.0.0";
-                    } else {
-                        ip = new IPManager(targetUUID.toString(), target).getIP();
+                    ProxiedPlayer t = ProxyServer.getInstance().getPlayer(args[0]);
+                    String target = String.valueOf(args[0]);
+                    UUID targetUUID = getUUIDFromName(target);
+
+                    if (targetUUID == null) {
+                        c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                        return;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                ip = t.getAddress().getHostName().toString();
-            }
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
-                return;
-            }
-            String[] ips = ip.split(":");
-            String iptrim = ips[0].replace('.', '_');
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
-            } else {
-                try {
-                    if (new BanManager(target, targetUUID.toString()).getBanned() == false) {
-                        c.sendMessage(prefix + "Dieser Spieler ist nicht gebannt.");
-                    } else {
-                        int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
-                        c.sendMessage(prefix + "§7Du hast den Spieler §b" + target + " §7erfolgreich entbannt.");
-                        new BanManager(target, targetUUID.toString()).setBannedStatus(false);
-                        new AutoBanManager().setIPStatusBanned(iptrim, false);
-                        new HistoryManager(target, targetUUID.toString()).settaken(true, UNBANNER, actuallyCount);
-                        for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
-                            if(all.hasPermission(servername + ".ban.Notify")) {
-                                all.sendMessage(line);
-                                all.sendMessage(prefix + "§7Art: §a§lUnbann");
-                                all.sendMessage(prefix + "§7Name: §b" + target);
-                                all.sendMessage(prefix + "§7Von: §b" + UNBANNER);
-                                all.sendMessage(line);
+                    String ip = new BanManager(target, targetUUID.toString()).getIp();
+                        if (new BanManager(target, targetUUID.toString()).getBanned() == false) {
+                            c.sendMessage(prefix + "Dieser Spieler ist nicht gebannt.");
+                        } else {
+                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                            c.sendMessage(prefix + "§7Du hast den Spieler §b" + target + " §7erfolgreich entbannt.");
+                            new BanManager(target, targetUUID.toString()).deleteBan();
+                            new AutoBanManager().setIPStatusBanned(ip, false);
+                            new HistoryManager(target, targetUUID.toString()).settaken(true, UNBANNER, actuallyCount);
+                            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
+                                if (all.hasPermission(servername + ".ban.Notify")) {
+                                    all.sendMessage(line);
+                                    all.sendMessage(prefix + "§7Art: §a§lUnbann");
+                                    all.sendMessage(prefix + "§7Name: §b" + target);
+                                    all.sendMessage(prefix + "§7Von: §b" + UNBANNER);
+                                    all.sendMessage(line);
+                                }
                             }
+                            System.out.println(line);
+                            System.out.println(prefix + "§7Art: §a§lUnbann");
+                            System.out.println(prefix + "§7Name: §b" + target);
+                            System.out.println(prefix + "§7Von: §b" + UNBANNER);
+                            System.out.println(line);
                         }
-                        System.out.println(line);
-                        System.out.println(prefix + "§7Art: §a§lUnbann");
-                        System.out.println(prefix + "§7Name: §b" + target);
-                        System.out.println(prefix + "§7Von: §b" + UNBANNER);
-                        System.out.println(line);
-                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
         } else {
             c.sendMessage(prefix + "Benutze: §b/Unban §7<§bSpieler§7>");
         }

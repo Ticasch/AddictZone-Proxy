@@ -24,55 +24,55 @@ public class PRCMD extends Command {
                 if (args[0].equalsIgnoreCase("confirm")) {
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b60 §7Sekunden.");
                     try {
-                        Thread.sleep(30000);
+                        sleep.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b30 §7Sekunden.");
                     try {
-                        Thread.sleep(19000);
+                        sleep.sleep(19000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b10 §7Sekunden.");
                     try {
-                        Thread.sleep(5000);
+                        sleep.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b5 §7Sekunden.");
                     try {
-                        Thread.sleep(1000);
+                        sleep.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b4 §7Sekunden.");
                     try {
-                        Thread.sleep(1000);
+                        sleep.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b3 §7Sekunden.");
                     try {
-                        Thread.sleep(1000);
+                        sleep.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b2 §7Sekunden.");
                     try {
-                        Thread.sleep(1000);
+                        sleep.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart in §b1 §7Sekunde.");
                     try {
-                        Thread.sleep(1000);
+                        sleep.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     ProxyServer.getInstance().broadcast(prefix + "Netzwerk Neustart...");
                     try {
-                        Thread.sleep(1000);
+                        sleep.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

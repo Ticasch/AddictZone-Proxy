@@ -28,4 +28,12 @@ public class IPManager {
         }
         return this.fileBuilder.getString(this.uuid + ".IP");
     }
+    public void setFullIp(String ip) {
+        this.fileBuilder.setValue(this.uuid + ".IP-info.full", ip);
+        this.fileBuilder.save();
+    }
+    public void setHostIP(String ip) {
+        this.fileBuilder.setValue(this.uuid + ".IP-info.Host", ip);
+        this.fileBuilder.save();
+    }
 }

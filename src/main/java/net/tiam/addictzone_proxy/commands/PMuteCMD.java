@@ -65,7 +65,7 @@ public class PMuteCMD extends Command {
                 String Mute_Expiry = "Permanent";
                 try {
                     if (new MuteManager(target, targetUUID.toString()).getMuted() == true) {
-                        c.sendMessage(prefix + "Dieser Spieler ist bereits gemuted.");
+                        c.sendMessage(prefix + "Dieser Spieler ist bereits gemutet.");
                     } else {
                         try {
                             int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();

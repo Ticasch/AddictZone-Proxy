@@ -71,9 +71,8 @@ public class TMuteCMD extends Command {
             long hour = 1000 * 60 * 60;
             long day = 1000 * 60 * 60 * 24;
             try {
-                BanManager banManager = new BanManager(target, targetUUID.toString());
-                if (banManager.getBanned() == true) {
-                    c.sendMessage(prefix + "Dieser Spieler ist bereits gebannt.");
+                if (new MuteManager(target, targetUUID.toString()).getMuted() == true) {
+                    c.sendMessage(prefix + "Dieser Spieler ist bereits gemutet.");
                     return;
                 }
                 long longExpiry = args[1].endsWith("m") ? (min * time) : args[1].endsWith("h") ? (hour * time) : args[1].endsWith("d") ? (day * time) : 0;

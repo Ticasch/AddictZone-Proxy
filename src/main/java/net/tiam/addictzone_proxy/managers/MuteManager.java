@@ -3,6 +3,7 @@ package net.tiam.addictzone_proxy.managers;
 import net.tiam.addictzone_proxy.utilities.FileBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MuteManager {
     private String name;
@@ -87,5 +88,22 @@ public class MuteManager {
     }
     public long getMuteDate() {
         return this.fileBuilder.getLong(this.uuid + ".mutedate");
+    }
+    public ArrayList<String> getMutedUsers() {
+        ArrayList<String> list = new ArrayList<>(this.fileBuilder.getKeys());
+        return list;
+    }
+    public void deleteMute() {
+        this.fileBuilder.setValue(this.uuid + ".Muted", null);
+        this.fileBuilder.setValue(this.uuid + ".Name", null);
+        this.fileBuilder.setValue(this.uuid + ".Ip", null);
+        this.fileBuilder.setValue(this.uuid + ".reason", null);
+        this.fileBuilder.setValue(this.uuid + ".expiry", null);
+        this.fileBuilder.setValue(this.uuid + ".ExpiryLong", null);
+        this.fileBuilder.setValue(this.uuid + ".mutedate", null);
+        this.fileBuilder.setValue(this.uuid + ".muter", null);
+        this.fileBuilder.setValue(this.uuid + ".permanently", null);
+        this.fileBuilder.setValue(this.uuid, null);
+        this.fileBuilder.save();
     }
 }
