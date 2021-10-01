@@ -26,6 +26,7 @@ public class MuteListCMD extends Command {
     String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     String line = MainClass.Line;
+    String names = "";
     public MuteListCMD() {
         super("mutelist");
     }
@@ -37,14 +38,64 @@ public class MuteListCMD extends Command {
         }
         if (args.length == 0) {
             try {
-                ProxiedPlayer p = ((ProxiedPlayer) c);
-                if (new MuteManager(p.getName(), p.getUniqueId().toString()).getMutedUsers().size() > 0) {
-                    c.sendMessage(line);
-                    c.sendMessage(prefix + "Derzeit sind folgene Spieler gemutet:");
-                    getMuted(c.toString());
+                CommandSender p = ProxyServer.getInstance().getConsole();
+                if (!c.getName().equalsIgnoreCase("CONSOLE")) {
+                    p = ProxyServer.getInstance().getPlayer(c.getName());
+                }
+                if (new MuteManager(c.getName(), c.getName()).getMutedUsers().size() > 0) {
+                    getMuted(c, 1);
+                    TextComponent pageSelect = new TextComponent(prefix + "§7Vorherieg Seite §8| ");
+                    TextComponent next = new TextComponent("§bNächste Seite");
+                    next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/Mutelist 2"));
+                    pageSelect.addExtra(next);
+                    if (new MuteManager("", "").getMutedUsers().size() > 20) {
+                        c.sendMessage(pageSelect);
+                    } else {
+                        c.sendMessage(prefix + "Vorherige Seite §8| §7Nächste Seite");
+                    }
                     c.sendMessage(line);
                 } else {
                     c.sendMessage(prefix + "Derzeit sind keine User gemutet.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (args.length == 1) {
+            if (!isInteger(args[0])) {
+                c.sendMessage(prefix + "Du musst eine Zahl angeben.");
+                return;
+            }
+            if (Integer.parseInt(args[0]) < 1 || Integer.parseInt(args[0]) > getPages()) {
+                c.sendMessage(prefix + "Bitte gebe eine zahl zwischen §b1 §7und §b" + getPages() + " §7an.");
+                return;
+            }
+            try {
+                if (new MuteManager("", "").getMutedUsers().size() > 0) {
+                    getMuted(c, Integer.parseInt(args[0]));
+                    TextComponent pageSelect = new TextComponent(prefix);
+                    TextComponent before = new TextComponent("§bVorherige Seite");
+                    TextComponent next = new TextComponent("§bNächste Seite");
+                    before.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/Mutelist " + (Integer.parseInt(args[0]) - 1)));
+                    next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/Mutelist " + (Integer.parseInt(args[0]) + 1)));
+                    if (Integer.parseInt(args[0]) == 1 && getPages() == 1) {
+                        pageSelect.addExtra("§7Vorherige Seite §8| §7Nächste Seite");
+                    } else if (Integer.parseInt(args[0]) == 1 && getPages() > 1) {
+                        pageSelect.addExtra("§7Vorherige Seite §8| ");
+                        pageSelect.addExtra(next);
+                    } else if (Integer.parseInt(args[0]) > 1) {
+                        if (Integer.parseInt(args[0]) < getPages()) {
+                            pageSelect.addExtra(before);
+                            pageSelect.addExtra(" §8| ");
+                            pageSelect.addExtra(next);
+                        } else {
+                            pageSelect.addExtra(before);
+                            pageSelect.addExtra(" §8| §7Nächste Seite");
+                        }
+                    }
+                    c.sendMessage(pageSelect);
+                    c.sendMessage(line);
+                } else {
+                    c.sendMessage(prefix + "Derzeit sind keine Spieler gemutett.");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,10 +104,13 @@ public class MuteListCMD extends Command {
             c.sendMessage(prefix + "Benutze: §b/Mutelist");
         }
     }
-    public void getMuted(String c) {
+    public void getMuted(CommandSender c, int arg) {
         try {
-            for (String users : new MuteManager(c, c).getMutedUsers()) {
-                String target = new MuteManager(c, users).getName();
+            c.sendMessage(line);
+            c.sendMessage(prefix + "Insgesammt sind §b" + new MuteManager("", "").getMutedUsers().size() + " §7Spieler gemutet.");
+            c.sendMessage(prefix + "Muteliste Seite §b" + arg + " §7von §b" + getPages());
+            for (String users : new MuteManager("", "").getMutedUsers()) {
+                String target = new MuteManager("", users).getName();
                 String targetUUID = users;
                 String ip = new MuteManager(target, targetUUID.toString()).getIp();
                 String[] ips = ip.split(":");
@@ -66,20 +120,54 @@ public class MuteListCMD extends Command {
                     new AutoBanManager().setIpStatusMuted(iptrim, false);
                     new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
                 }
-                if (new MuteManager(c, users).getMuted() == false) {
-                    return;
+                names = names + users + ":";
+            }
+            Msg(c, arg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+    public void Msg(CommandSender c, int arg) {
+        try {
+            int max = 0;
+            if (new MuteManager("", "").getMutedUsers().size() > (arg * 20)) {
+                max = (arg * 20);
+            } else {
+                max = new MuteManager("", "").getMutedUsers().size();
+            }
+            for (int i = ((arg - 1) * 20); i < max; i++) {
+                if (i <= new MuteManager("", "").getMutedUsers().size()) {
+                    TextComponent name = new TextComponent(prefix + "§b" + new MuteManager("", new MuteManager("", "").getMutedUsers().get(i)).getName() + " §7(von: §b" + new MuteManager("", new MuteManager("", "").getMutedUsers().get(i)).getBanner() + "§7)" + " §8[§b" + (i+1) + "§8]");
+                    name.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/Check " + new MuteManager("", new MuteManager("", "").getMutedUsers().get(i)).getName()));
+                    c.sendMessage(name);
                 }
-                TextComponent user = new TextComponent(prefix + "§b" + new MuteManager(c, users).getName() + " §7(von: §b" + new MuteManager(c, users).getBanner() + "§7)");
-                user.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/Check " + new MuteManager(c, users).getName()));
-                CommandSender p = ProxyServer.getInstance().getConsole();
-                if (!c.equalsIgnoreCase("CONSOLE")) {
-                    p = ProxyServer.getInstance().getPlayer(c);
-                }
-                p.sendMessage(user);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return;
+    }
+    public int getPages() {
+        int page = 0;
+        for (int i = 0; i <= 100; i++) {
+            try {
+                if (new MuteManager("", "").getMutedUsers().size() > (20 * i)) {
+                    page++;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return page;
+    }
+    public static boolean isInteger(String strNum) {
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException|NullPointerException nfe) {
+            return false;
+        }
+        return true;
     }
     public static UUID getUUIDFromName(String name){
         try {

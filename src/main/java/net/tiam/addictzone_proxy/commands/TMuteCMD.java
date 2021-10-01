@@ -40,12 +40,20 @@ public class TMuteCMD extends Command {
             MUTER = servername;
         }
         if(args.length >= 3) {
+            if (!isInteger(args[1].substring(0, args[1].length() - 1))) {
+                c.sendMessage(prefix + "Du musst eine Zahl angeben.");
+                return;
+            }
             String reason = "";
             for (int i = 2; i != args.length; i++)
                 reason = reason + args[i] + " ";
             String target = args[0];
             ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
             UUID targetUUID = getUUIDFromName(args[0]);
+            if (targetUUID == null) {
+                c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                return;
+            }
             String ip = "";
             if (t == null) {
                 try {
@@ -59,10 +67,6 @@ public class TMuteCMD extends Command {
                 }
             } else {
                 ip = t.getAddress().toString();
-            }
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
-                return;
             }
             String[] ips = ip.split(":");
             String iptrim = ips[0].replace('.', '_').replace("/", "");
@@ -132,6 +136,14 @@ public class TMuteCMD extends Command {
             return null;
         }
         return null;
+    }
+    public static boolean isInteger(String strNum) {
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException|NullPointerException nfe) {
+            return false;
+        }
+        return true;
     }
     public static int permittedTimePermission(UUID player) {
         ProxiedPlayer p = ProxyServer.getInstance().getPlayer(player);

@@ -13,8 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 
 public class PBanCMD extends Command {
@@ -45,19 +43,23 @@ public class PBanCMD extends Command {
                 String target = String.valueOf(args[0]);
                 ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
                 UUID targetUUID = getUUIDFromName(target);
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                    return;
+                }
                 String ip = "";
                 if (t == null) {
                     try {
-                        if (new IPManager(targetUUID.toString(), target).getIP() == null) {
+                        if (new IPManager(targetUUID.toString(), target).getHostIP() == null) {
                             ip = "0.0.0.0";
                         } else {
-                            ip = new IPManager(targetUUID.toString(), target).getIP();
+                            ip = new IPManager(targetUUID.toString(), target).getHostIP();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    ip = t.getAddress().getHostName().toString();
+                    ip = t.getAddress().getAddress().getHostAddress();
                 }
                 if (targetUUID == null) {
                     c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
@@ -68,7 +70,7 @@ public class PBanCMD extends Command {
                 String Ban_Banner = BANNER;
                 String Ban_Reason = reason;
                 String Ban_Expiry = "Permanent";
-                String PBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + Ban_Banner + "\n§7Grund: §b" + Ban_Reason + "\n§7Dauer: §b" + Ban_Expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+                String PBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + Ban_Banner + "\n§7Grund: §b" + Ban_Reason + "\n§7Dauer: §b" + Ban_Expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum\n§7Discord-Verify-Server: §bVerify.AddictZone.eu";
                 try {
                     if (new BanManager(target, targetUUID.toString()).getBanned() == true) {
                         c.sendMessage(prefix + "Dieser Spieler ist bereits gebannt.");
@@ -101,6 +103,15 @@ public class PBanCMD extends Command {
                             System.out.println(line);
                             if (!(t == null)) {
                                 t.disconnect(PBanKickMsg);
+                            }
+                            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
+                                UUID uuid = getUUIDFromName(all.getName());
+                                String ip1 = all.getAddress().getAddress().getHostAddress();
+                                String[] ips1 = ip1.split(":");
+                                String iptrim1 = ips1[0].replace(".", "_").replace("/", "");
+                                if (new AutoBanManager().getIPStatusBanned(iptrim1)) {
+                                    ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Ban " + all.getName() + " Bannumgehung §7(§cAccount Liste§7)");
+                                }
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

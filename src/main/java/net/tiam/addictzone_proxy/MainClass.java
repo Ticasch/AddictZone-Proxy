@@ -26,11 +26,13 @@ public final class MainClass extends Plugin {
     public static String kickmessage = "§9§lAddictZone §7- §6§lWartungen\n\n§7Unser Netzwerk befindet sich derzeit in der §cAufbauphase§7.\n§7Bei Fragen wende dich gerne an unseren §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
 
     public void onEnable() {
+        System.out.println(Prefix + "Starte §9§lAddictZone-Proxy");
         registerCommands();
     }
 
     @Override
     public void onDisable() {
+        System.out.println(Prefix + "Stoppe §9§lAddictZone-Proxy");
     }
 
     public void registerCommands() {

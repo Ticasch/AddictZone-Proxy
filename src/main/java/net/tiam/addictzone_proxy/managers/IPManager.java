@@ -23,10 +23,13 @@ public class IPManager {
         this.fileBuilder.save();
     }
     public String getIP () {
-        if (this.fileBuilder.getString(this.uuid + ".Ip") == null) {
+        if (this.fileBuilder.getString(this.uuid + ".IP") == null) {
             return "0.0.0.0";
         }
         return this.fileBuilder.getString(this.uuid + ".IP");
+    }
+    public String getHostIP() {
+        return this.fileBuilder.getString(this.uuid + ".IP-info.Host");
     }
     public void setFullIp(String ip) {
         this.fileBuilder.setValue(this.uuid + ".IP-info.full", ip);

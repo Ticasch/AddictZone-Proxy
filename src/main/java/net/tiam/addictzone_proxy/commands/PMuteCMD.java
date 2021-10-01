@@ -40,6 +40,10 @@ public class PMuteCMD extends Command {
                 String target = String.valueOf(args[0]);
                 ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
                 UUID targetUUID = getUUIDFromName(target);
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                    return;
+                }
                 String ip = "";
                 if (t == null) {
                     try {

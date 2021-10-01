@@ -1,3 +1,4 @@
 name: AddictZone-Proxy
-version: '${project.version}'
+version: 1.0
+author: req_Ticasch
 main: net.tiam.addictzone_proxy.MainClass

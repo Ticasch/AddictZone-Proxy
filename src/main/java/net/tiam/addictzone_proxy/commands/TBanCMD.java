@@ -42,13 +42,21 @@ public class TBanCMD extends Command {
         } else {
             BANNER = servername;
         }
-        if(args.length >= 3) {
+        if (args.length >= 3) {
+            if (!isInteger(args[1].substring(0, args[1].length() - 1))) {
+                c.sendMessage(prefix + "Du musst eine Zahl angeben.");
+                return;
+            }
             String reason = "";
             for (int i = 2; i != args.length; i++)
                 reason = reason + args[i] + " ";
             String target = args[0];
             ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
             UUID targetUUID = getUUIDFromName(args[0]);
+            if (targetUUID == null) {
+                c.sendMessage(prefix + "Dieser Spieler ist ncht registriert.");
+                return;
+            }
             String ip = "";
             String banner = BANNER;
             if (t == null) {
@@ -63,10 +71,6 @@ public class TBanCMD extends Command {
                 }
             } else {
                 ip = t.getAddress().toString();
-            }
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
-                return;
             }
             String[] ips = ip.split(":");
             String iptrim = ips[0].replace('.', '_').replace("/", "");
@@ -87,7 +91,7 @@ public class TBanCMD extends Command {
                 long banexpiry = System.currentTimeMillis() + longExpiry;
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 int newCount = actuallyCount + 1;
-                String TBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + BANNER + "\n§7Grund: §b" + reason + "\n§7Dauer: §b" + expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+                String TBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + BANNER + "\n§7Grund: §b" + reason + "\n§7Dauer: §b" + expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum\n§7Discord-Verify-Server: §bVerify.AddictZone.eu";
                 if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
                     c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage bannen.");
                     return;
@@ -133,6 +137,14 @@ public class TBanCMD extends Command {
             return null;
         }
         return null;
+    }
+    public static boolean isInteger(String strNum) {
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException|NullPointerException nfe) {
+            return false;
+        }
+        return true;
     }
     public static int permittedTimePermission(UUID player) {
         ProxiedPlayer p = ProxyServer.getInstance().getPlayer(player);

@@ -1,5 +1,7 @@
 package net.tiam.addictzone_proxy.listeners;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -9,7 +11,10 @@ import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.MainClass;
 import net.tiam.addictzone_proxy.managers.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -36,7 +41,7 @@ public class JoinListener implements Listener {
         boolean banned = new BanManager(target.getName(), target.getUniqueId().toString()).getBanned();
         boolean muted = new MuteManager(target.getName(), target.getUniqueId().toString()).getMuted();
         String servername = MainClass.ServerName;
-        String PBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + Ban_Banner + "\n§7Grund: §b" + Ban_Reason + "\n§7Dauer: §b" + Ban_Expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+        String PBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + Ban_Banner + "\n§7Grund: §b" + Ban_Reason + "\n§7Dauer: §b" + Ban_Expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum\n§7Discord-Verify-Server: §bVerify.AddictZone.eu";
         String fullservermsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Der Server ist voll.\n§7Versuche es Später erneut.";
         String fullservermsgranked = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Der Server ist voll und alle zusaätzlichen §bRangslots.\n§7sind ebenfalls belegt. Versuche es Später erneut.";
         int accounts = 0;
@@ -46,7 +51,7 @@ public class JoinListener implements Listener {
                 if (all != player) {
                     accounts++;
                     if (accounts >= permittedAccountsPermission(target.getUniqueId())) {
-                        String samecountmsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Du bist bereits mit §b" + accounts + " §7Account(s) online.\n\nSolltest du der Meinung sein, dass dies ein\n§cFehler §7ist, melde dich im §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
+                        String samecountmsg = "§9§lAddictZone §8➜ §3§lNetzwerk-Filter\n\n§7Du bist bereits mit §b" + accounts + " §7Account(s) online.\n\nSolltest du der Meinung sein, dass dies ein\n§cFehler §7ist, melde dich im §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum\n§7Discord-Verify-Server: §bVerify.AddictZone.eu";
                         e.getPlayer().disconnect(samecountmsg);
                         e.setCancelled(true);
                     }
@@ -86,8 +91,16 @@ public class JoinListener implements Listener {
         if (new AutoBanManager().getIPStatusBanned(iptrim.replace("/", ""))) {
             if (new BanManager(target.getName(), target.getUniqueId().toString()).getBanned() == false)
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Pban " + target.getName() + " Bannumgehung §7(§cAccount Liste§7)");
-            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
+            for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
+                UUID uuid = getUUIDFromName(all.getName());
+                String ip1 = all.getAddress().getAddress().getHostAddress();
+                String[] ips1 = ip1.split(":");
+                String iptrim1 = ips1[0].replace(".", "_").replace("/", "");
+                if (new AutoBanManager().getIPStatusBanned(iptrim1)) {
+                    ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Ban " + all.getName() + " Bannumgehung §7(§cAccount Liste§7)");
+                }
                 new TablistManager().setTablist(all);
+            }
         }
         if (new AutoBanManager().getIPStatusMuted(iptrim.replace("/", ""))) {
             if (new BanManager(target.getName(), target.getUniqueId().toString()).getBanned() == false) {
@@ -156,5 +169,16 @@ public class JoinListener implements Listener {
             }
         }
         return 0;
+    }
+    public static UUID getUUIDFromName(String name){
+        try {
+            Object o = new JsonParser().parse(new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream())));
+            if (o instanceof JsonObject)
+                return UUID.fromString(((JsonObject) o).get("id").getAsString().replaceFirst("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)",
+                        "$1-$2-$3-$4-$5"));
+        } catch (IOException ignored) {
+            return null;
+        }
+        return null;
     }
 }
