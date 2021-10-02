@@ -50,10 +50,10 @@ public class PBanCMD extends Command {
                 String ip = "";
                 if (t == null) {
                     try {
-                        if (new IPManager(targetUUID.toString(), target).getHostIP() == null) {
+                        if (new IPManager(targetUUID.toString(), target).getIP() == null) {
                             ip = "0.0.0.0";
                         } else {
-                            ip = new IPManager(targetUUID.toString(), target).getHostIP();
+                            ip = new IPManager(targetUUID.toString(), target).getIP();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -109,7 +109,7 @@ public class PBanCMD extends Command {
                                 String ip1 = all.getAddress().getAddress().getHostAddress();
                                 String[] ips1 = ip1.split(":");
                                 String iptrim1 = ips1[0].replace(".", "_").replace("/", "");
-                                if (new AutoBanManager().getIPStatusBanned(iptrim1)) {
+                                if (new AutoBanManager().getIPStatusBanned(iptrim1) && (all.toString() != target)) {
                                     ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Ban " + all.getName() + " Bannumgehung §7(§cAccount Liste§7)");
                                 }
                             }

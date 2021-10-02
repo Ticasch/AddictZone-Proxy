@@ -51,14 +51,17 @@ public class HistoryCMD extends Command {
                 int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
                 if (actuallyCount > 0) {
                     c.sendMessage(line);
-                    c.sendMessage(prefix + "History von: §b" + target);
-                    for (int i = 1; i <= actuallyCount; i++) {
-                        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
-                        String bandate = format.format(new Date(new HistoryManager(target, targetUUID.toString()).getBandate(i)));
-                        TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID.toString()).getType(i) + " §7(§b" + i + "§7)");
-                        info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " " + i));
-                        c.sendMessage(info);
+                    c.sendMessage(prefix + "History von §b" + target + " §7(§b" + actuallyCount + " §7Einträge)");
+                    c.sendMessage(prefix + "Seite §b1 §7von §b" + getPages(target, targetUUID.toString()));
+                    Msg(c, 1, target, targetUUID.toString());
+                    TextComponent pageSelect = new TextComponent(prefix + "§7Vorherieg Seite §8| ");
+                    TextComponent next = new TextComponent("§bNächste Seite");
+                    next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " page 2"));
+                    pageSelect.addExtra(next);
+                    if (actuallyCount > 20) {
+                        c.sendMessage(pageSelect);
+                    } else {
+                        c.sendMessage(prefix + "Vorherige Seite §8| §7Nächste Seite");
                     }
                     c.sendMessage(line);
                 } else {
@@ -67,35 +70,36 @@ public class HistoryCMD extends Command {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (args.length == 2) {
-            String target = String.valueOf(args[0]);
-            UUID targetUUID = getUUIDFromName(target);
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
-                return;
-            }
-            ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
-            String ip = "";
-            if (t == null) {
-                try {
-                    if (new IPManager(targetUUID.toString(), target).getIP() == null) {
-                        ip = "0.0.0.0";
-                    } else {
-                        ip = new IPManager(targetUUID.toString(), target).getIP();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        } else if (args.length == 3) {
+            if (args[1].equalsIgnoreCase("specific")) {
+                String target = String.valueOf(args[0]);
+                UUID targetUUID = getUUIDFromName(target);
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                    return;
                 }
-            } else {
-                ip = t.getAddress().toString();
-            }
-            if (targetUUID == null) {
-                c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
-                return;
-            }
-            String[] ips = ip.split(":");
-            String iptrim = ips[0].replace('.', '_').replace("/", "");
-            try {
+                ProxiedPlayer t = ProxyServer.getInstance().getPlayer(target);
+                String ip = "";
+                if (t == null) {
+                    try {
+                        if (new IPManager(targetUUID.toString(), target).getIP() == null) {
+                            ip = "0.0.0.0";
+                        } else {
+                            ip = new IPManager(targetUUID.toString(), target).getIP();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ip = t.getAddress().toString();
+                }
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler existiert nicht.");
+                    return;
+                }
+                String[] ips = ip.split(":");
+                String iptrim = ips[0].replace('.', '_').replace("/", "");
+                try {
                     if (new MuteManager(target, targetUUID.toString()).getMuted() && new MuteManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new MuteManager(target, targetUUID.toString()).getExpiryLong() > 0 && new MuteManager(target, targetUUID.toString()).getPermanently() == false) {
                         new MuteManager(target, targetUUID.toString()).deleteMute();
                         new AutoBanManager().setIpStatusMuted(iptrim, false);
@@ -106,47 +110,149 @@ public class HistoryCMD extends Command {
                         new AutoBanManager().setIPStatusBanned(iptrim, false);
                         new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
                     }
-            try {
-                int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
-                if (Integer.parseInt(args[1]) <= actuallyCount) {
-                    if (Integer.parseInt(args[1]) != 0) {
-                        int count = Integer.parseInt(args[1]);
-                        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
-                        String bandate = format.format(new Date(new HistoryManager(target, targetUUID.toString()).getBandate(count)));
-                        c.sendMessage(line);
-                        c.sendMessage(prefix + "History (§b" + count + "§7) von: §b" + target);
-                        c.sendMessage(prefix + "Art: " + new HistoryManager(target, targetUUID.toString()).getType(count));
-                        c.sendMessage(prefix + "Von: §b" + new HistoryManager(target, targetUUID.toString()).getBanner(count));
-                        c.sendMessage(prefix + "Grund: §b" + new HistoryManager(target, targetUUID.toString()).getReason(count));
-                        c.sendMessage(prefix + "Dauer: §b" + new HistoryManager(target, targetUUID.toString()).getExpiry(count));
-                        if (new HistoryManager(target, targetUUID.toString()).getTaken(count) == false) {
-                            c.sendMessage(prefix + "Aufgehoben: §bNein");
-                        } else {
-                            c.sendMessage(prefix + "Aufgehoben: §bJa §7(von: §b" + new HistoryManager(target, targetUUID.toString()).getTaker(count) + "§7)");
+                    try {
+                        int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                        if (!isInteger(args[2])) {
+                            c.sendMessage(prefix + "Du musst eine Zahl angeben.");
+                            return;
                         }
-                        c.sendMessage(prefix + "Datum: §b" + bandate);
+                        int count = Integer.parseInt(args[2]);
+                        if (count <= actuallyCount) {
+                            if (count > 0) {
+                                SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                                format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+                                String bandate = format.format(new Date(new HistoryManager(target, targetUUID.toString()).getBandate(count)));
+                                c.sendMessage(line);
+                                c.sendMessage(prefix + "History (§b" + count + "§7) von: §b" + target);
+                                c.sendMessage(prefix + "Art: " + new HistoryManager(target, targetUUID.toString()).getType(count));
+                                c.sendMessage(prefix + "Von: §b" + new HistoryManager(target, targetUUID.toString()).getBanner(count));
+                                c.sendMessage(prefix + "Grund: §b" + new HistoryManager(target, targetUUID.toString()).getReason(count));
+                                c.sendMessage(prefix + "Dauer: §b" + new HistoryManager(target, targetUUID.toString()).getExpiry(count));
+                                if (new HistoryManager(target, targetUUID.toString()).getTaken(count) == false) {
+                                    c.sendMessage(prefix + "Aufgehoben: §bNein");
+                                } else {
+                                    c.sendMessage(prefix + "Aufgehoben: §bJa §7(von: §b" + new HistoryManager(target, targetUUID.toString()).getTaker(count) + "§7)");
+                                }
+                                c.sendMessage(prefix + "Datum: §b" + bandate);
+                                c.sendMessage(line);
+                            } else {
+                                c.sendMessage(prefix + "Bitte gebe eine Zahl zwischen §b1 §7und §b" + actuallyCount + " §7an.");
+                            }
+                        } else {
+                            c.sendMessage(prefix + "Bitte gebe eine Zahl zwischen §b1 §7und §b" + actuallyCount + " §7an.");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (args[1].equalsIgnoreCase("page")) {
+                if (!isInteger(args[2])) {
+                    c.sendMessage(prefix + "Du musst eine Zahl angeben.");
+                    return;
+                }
+                int arg = Integer.parseInt(args[2]);
+                String target = String.valueOf(args[0]);
+                UUID targetUUID = getUUIDFromName(target);
+                if (arg < 1 || arg > getPages(target, targetUUID.toString())) {
+                    c.sendMessage(prefix + "Bitte gebe eine zahl zwischen §b1 §7und §b" + getPages(target, targetUUID.toString()) + " §7an.");
+                    return;
+                }
+                if (targetUUID == null) {
+                    c.sendMessage(prefix + "Dieser Spieler ist nicht registriert.");
+                    return;
+                }
+                try {
+                    int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                    if (actuallyCount > 0) {
+                        c.sendMessage(line);
+                        c.sendMessage(prefix + "History von §b" + target + " §7(§b" + actuallyCount + " §7Einträge)");
+                        c.sendMessage(prefix + "Seite §b" + arg + " §7von §b" + getPages(target, targetUUID.toString()));
+                        Msg(c, arg, target, targetUUID.toString());
+                        TextComponent pageSelect = new TextComponent(prefix);
+                        TextComponent before = new TextComponent("§bVorherige Seite");
+                        TextComponent next = new TextComponent("§bNächste Seite");
+                        before.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " page " + (Integer.parseInt(args[2]) - 1)));
+                        next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " page " + (Integer.parseInt(args[2]) + 1)));
+                        if (Integer.parseInt(args[2]) == 1 && getPages(target, targetUUID.toString()) == 1) {
+                            pageSelect.addExtra("§7Vorherige Seite §8| §7Nächste Seite");
+                        } else if (Integer.parseInt(args[2]) == 1 && getPages(target, targetUUID.toString()) > 1) {
+                            pageSelect.addExtra("§7Vorherige Seite §8| ");
+                            pageSelect.addExtra(next);
+                        } else if (Integer.parseInt(args[2]) > 1) {
+                            if (Integer.parseInt(args[2]) < getPages(target, targetUUID.toString())) {
+                                pageSelect.addExtra(before);
+                                pageSelect.addExtra(" §8| ");
+                                pageSelect.addExtra(next);
+                            } else {
+                                pageSelect.addExtra(before);
+                                pageSelect.addExtra(" §8| §7Nächste Seite");
+                            }
+                        }
+                        c.sendMessage(pageSelect);
                         c.sendMessage(line);
                     } else {
-                        c.sendMessage(prefix + "Bitte gebe eine Zahl über §b0 §7an.");
+                        c.sendMessage(prefix + "Dieser Spieler hat keine History");
                     }
-                } else {
-                    c.sendMessage(prefix + "Dieser Spieler hat nur §b" + actuallyCount + " 7Strafen.");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } catch (IOException e) {
-                e.printStackTrace();
-            }
             } else {
+                c.sendMessage(prefix + "Benutze: §b/History §7<§bSpieler§7>");
+            }
+        } else {
             c.sendMessage(prefix + "Benutze: §b/History §7<§bSpieler§7>");
         }
-
     }
-
-    public static UUID getUUIDFromName(String name){
+    public void Msg(CommandSender c, int arg, String target, String targetUUID) {
+        try {
+            int actuallyCount = new HistoryManager(target, targetUUID).getActuallyCount();
+            int max = 0;
+            if (actuallyCount > (arg * 20)) {
+                max = (arg * 20);
+            } else {
+                max = actuallyCount;
+            }
+            for (int i = (((arg - 1) * 20) + 1); i <= max; i++) {
+                if (i <= actuallyCount) {
+                    SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                    format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+                    String bandate = format.format(new Date(new HistoryManager(target, targetUUID).getBandate(i)));
+                    TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID).getType(i) + " §8[§b" + i + "§8]");
+                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " Specific " + i));
+                    c.sendMessage(info);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+    public int getPages(String target, String targetUUID) {
+        int page = 0;
+        try {
+            int actuallyCount = new HistoryManager(target, targetUUID).getActuallyCount();
+            for (int i = 0; i <= 100; i++) {
+                if (actuallyCount > (20 * i)) {
+                    page++;
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        return page;
+    }
+    public static boolean isInteger(String strNum) {
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
+    }
+        public static UUID getUUIDFromName(String name){
         try {
             Object o = new JsonParser().parse(new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream())));
             if (o instanceof JsonObject)

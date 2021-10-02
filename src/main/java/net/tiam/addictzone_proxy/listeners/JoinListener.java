@@ -96,7 +96,7 @@ public class JoinListener implements Listener {
                 String ip1 = all.getAddress().getAddress().getHostAddress();
                 String[] ips1 = ip1.split(":");
                 String iptrim1 = ips1[0].replace(".", "_").replace("/", "");
-                if (new AutoBanManager().getIPStatusBanned(iptrim1)) {
+                if (new AutoBanManager().getIPStatusBanned(iptrim1) && new BanManager(all.getName(), all.getUniqueId().toString()).getBanned() == false) {
                     ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), "Ban " + all.getName() + " Bannumgehung §7(§cAccount Liste§7)");
                 }
                 new TablistManager().setTablist(all);
