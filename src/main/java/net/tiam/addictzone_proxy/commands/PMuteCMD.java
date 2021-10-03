@@ -56,7 +56,7 @@ public class PMuteCMD extends Command {
                         e.printStackTrace();
                     }
                 } else {
-                    ip = t.getAddress().toString();
+                    ip = t.getAddress().getAddress().getHostAddress().toString();
                 }
                 if (targetUUID == null) {
                     c.sendMessage(prefix + "Dieser Spieler existiert nicht.");

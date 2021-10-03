@@ -1,5 +1,8 @@
 package net.tiam.addictzone_proxy.managers;
 
+import net.tiam.addictzone_proxy.model.History;
+import net.tiam.addictzone_proxy.model.HistoryEntry;
+import net.tiam.addictzone_proxy.model.HistoryType;
 import net.tiam.addictzone_proxy.utilities.FileBuilder;
 
 import java.io.IOException;
@@ -99,4 +102,32 @@ public class HistoryManager {
     public String getBanner(int count) {
         return this.fileBuilder.getString(this.uuid + "." + count + ".banner");
     }
+
+    public Collection<HistoryEntry> getHistories(){
+        return getHistory().getHistories().values();
+    }
+
+    public History getHistory(){
+        Map<Integer, HistoryEntry> historyEntries = new HashMap<>();
+
+        for (int count = 1; count <= getActuallyCountAll(); count++) {
+            String type = this.fileBuilder.getString(this.uuid + "." + count + ".type");
+            boolean taken = this.fileBuilder.getBoolean(this.uuid + "." + count + ".taken");
+            String takenBy = this.fileBuilder.getString(this.uuid + "." + count + ".takenBy");
+            String name = this.fileBuilder.getString(this.uuid + "." + count + ".Name");
+            String ip = this.fileBuilder.getString(this.uuid + "." + count + ".Ip");
+            String reason = this.fileBuilder.getString(this.uuid + "." + count + ".reason");
+            String expiry = this.fileBuilder.getString(this.uuid + "." + count + ".expiry");
+            Long expiryLong = this.fileBuilder.getLong(this.uuid + "." + count + ".ExpiryLong");
+            Long banDate = this.fileBuilder.getLong(this.uuid + "." + count + ".bandate");
+            String banner = this.fileBuilder.getString(this.uuid + "." + count + ".banner");
+
+            HistoryEntry historyEntry = new HistoryEntry(count, type.equalsIgnoreCase("§4§lBann") ? HistoryType.BAN : HistoryType.MUTE, taken, takenBy, name, ip, reason, expiry, banner, expiryLong, banDate);
+
+            historyEntries.put(count, historyEntry);
+        }
+
+        return new History(getActuallyCountAll(), getActuallyCountBan(), getActuallyCountMute(), historyEntries);
+    }
+
 }

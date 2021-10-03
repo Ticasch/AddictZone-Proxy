@@ -14,6 +14,9 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.tiam.addictzone_proxy.MainClass;
 import net.tiam.addictzone_proxy.managers.*;
+import net.tiam.addictzone_proxy.model.History;
+import net.tiam.addictzone_proxy.model.HistoryEntry;
+import net.tiam.addictzone_proxy.model.HistoryType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,8 +24,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class HistoryCMD extends Command {
     String prefix = MainClass.Prefix;
@@ -612,7 +617,7 @@ public class HistoryCMD extends Command {
                     format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
                     String bandate = format.format(new Date(new HistoryManager(target, targetUUID).getBandate(i)));
                     TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID).getType(i) + " §8[§b" + i + "§8]");
-                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " All Specific " + i));
+                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " Specific " + i));
                     c.sendMessage(info);
                 }
             }
@@ -621,62 +626,60 @@ public class HistoryCMD extends Command {
         }
         return;
     }
-    public void MsgMuted(CommandSender c, int arg, String target, String targetUUID) {
-        try {
-            int actuallyCount = new HistoryManager(target, targetUUID).getActuallyCountMute();
-            int max = 0;
-            if (actuallyCount > (arg * 20)) {
-                max = (arg * 20);
-            } else {
-                max = actuallyCount;
-            }
-            for (int i = (((arg - 1) * 20) + 1); i <= max; i++) {
-                if (!new HistoryManager(target, targetUUID).getType(i).equalsIgnoreCase("§c§lMute")) {
-                    i--;
-                return;
-            }
-                if (i <= actuallyCount) {
+    public void MsgMuted(CommandSender c, int arg, String target, String targetUUID) throws IOException {
 
+        HistoryManager historyManager = new HistoryManager(target, targetUUID);
+        History history = historyManager.getHistory();
+
+        int actuallyCount = historyManager.getActuallyCountMute();
+        int max = 0;
+        if (actuallyCount > (arg * 20)) {
+            max = (arg * 20);
+        } else {
+            max = actuallyCount;
+        }
+        List<HistoryEntry> sortedList = history.getHistories()
+                .values()
+                .stream()
+                .filter(historyEntry -> historyEntry.getHistoryType() == HistoryType.MUTE)
+                .collect(Collectors.toList())
+                .subList((((arg - 1) * 20)), max);
+
+                sortedList.forEach(historyEntry -> {
                     SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                     format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
-                    String bandate = format.format(new Date(new HistoryManager(target, targetUUID).getBandate(i)));
-                    TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID).getType(i) + " §8[§b" + i + "§8]");
-                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " Mute Specific " + i));
+                    String bandate = format.format(new Date(historyEntry.getBandate()));
+                    TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + (historyEntry.getHistoryType() == HistoryType.BAN ? "§4§lBann" : "§c§lMute") + " §8[§b" + historyEntry.getId() + "§8]");
+                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " Specific " + historyEntry.getId()));
                     c.sendMessage(info);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return;
+                });
     }
-    public void MsgBanned(CommandSender c, int arg, String target, String targetUUID) {
-        try {
-            int actuallyCount = new HistoryManager(target, targetUUID).getActuallyCountBan();
-            int max = 0;
-            if (actuallyCount > (arg * 20)) {
-                max = (arg * 20);
-            } else {
-                max = actuallyCount;
-            }
-            for (int i = (((arg - 1) * 20) + 1); i <= max; i++) {
-                if (!new HistoryManager(target, targetUUID).getType(i).equalsIgnoreCase("§4§lBann")) {
-                    i--;
-                return;
-            }
-                if (i <= actuallyCount) {
+    public void MsgBanned(CommandSender c, int arg, String target, String targetUUID) throws IOException {
+
+        HistoryManager historyManager = new HistoryManager(target, targetUUID);
+        History history = historyManager.getHistory();
+
+        int actuallyCount = historyManager.getActuallyCountBan();
+        int max = 0;
+        if (actuallyCount > (arg * 20)) {
+            max = (arg * 20);
+        } else {
+            max = actuallyCount;
+        }
+        List<HistoryEntry> sortedList = history.getHistories()
+                .values()
+                .stream()
+                .filter(historyEntry -> historyEntry.getHistoryType() == HistoryType.BAN)
+                .collect(Collectors.toList())
+                .subList((((arg - 1) * 20)), max);
+                sortedList.forEach(historyEntry -> {
                     SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                     format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
-                    String bandate = format.format(new Date(new HistoryManager(target, targetUUID).getBandate(i)));
-                    TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + new HistoryManager(target, targetUUID).getType(i) + " §8[§b" + i + "§8]");
-                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " Ban Specific " + i));
+                    String bandate = format.format(new Date(historyEntry.getBandate()));
+                    TextComponent info = new TextComponent(prefix + "§b" + bandate + " §7- " + (historyEntry.getHistoryType() == HistoryType.BAN ? "§4§lBann" : "§c§lMute") + " §8[§b" + historyEntry.getId() + "§8]");
+                    info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/History " + target + " Specific " + historyEntry.getId()));
                     c.sendMessage(info);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return;
+                });
     }
     public int getPagesAll(String target, String targetUUID) {
         int page = 0;

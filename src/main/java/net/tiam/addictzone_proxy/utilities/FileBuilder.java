@@ -77,4 +77,12 @@ public class FileBuilder {
         }
         return this;
     }
+
+    public Configuration getC() {
+        return c;
+    }
+
+    public File getF() {
+        return f;
+    }
 }
