@@ -114,6 +114,12 @@ public class JoinListener implements Listener {
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers())
                 new TablistManager().setTablist(all);
         }
+        if (!(new UserManager(target.getName(), target.getUniqueId().toString()).getUsers().contains(target.getUniqueId().toString()))) {
+            new UserManager(target.getName(), target.getUniqueId().toString()).setFirstJoin(System.currentTimeMillis());
+        }
+        new UserManager(target.getName(), target.getUniqueId().toString()).setName();
+        new UserManager(target.getName(), target.getUniqueId().toString()).setJoins(new UserManager(target.getName(), target.getUniqueId().toString()).getJoins() + 1);
+        new UserManager(target.getName(), target.getUniqueId().toString()).setLastJoin(System.currentTimeMillis());
     }
     @EventHandler
     public void onQuit(ServerDisconnectEvent e) throws IOException {
