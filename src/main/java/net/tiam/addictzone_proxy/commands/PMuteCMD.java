@@ -72,10 +72,13 @@ public class PMuteCMD extends Command {
                         c.sendMessage(prefix + "Dieser Spieler ist bereits gemutet.");
                     } else {
                         try {
-                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCountAll();
                             int newCount = actuallyCount + 1;
+                            int actuallyCountMute = new HistoryManager(target, targetUUID.toString()).getActuallyCountMute();
+                            int newCountMute = actuallyCountMute + 1;
                             new MuteManager(target, targetUUID.toString()).setMuted(iptrim.replace("/", ""), reason, "Permanent", -1, BANNER, true, true);
                             new HistoryManager(target, targetUUID.toString()).setHistory(iptrim.replace("", ""), reason, Mute_Expiry, -1 , Mute_Banner, "nobody", "§c§lMute", false, String.valueOf(newCount));
+                            new HistoryManager(target, targetUUID.toString()).setAcctuallyCountMute(newCountMute);
                             new AutoBanManager().setIpStatusMuted(iptrim.replace("/", ""), true);
                             c.sendMessage(prefix + "Du hast den Spieler §b" + target + " §7erfolgreich gebannt.");
                             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {

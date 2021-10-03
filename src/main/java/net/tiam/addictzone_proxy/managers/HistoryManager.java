@@ -18,7 +18,7 @@ public class HistoryManager {
         this.uuid = uuid;
     }
     public void setHistory(String ip, String reason, String expiry, long expirylong, String banner, String taker, String type, boolean taken, String count) {
-        this.fileBuilder.setValue(this.uuid + ".actuallyCount", Integer.valueOf(count));
+        this.fileBuilder.setValue(this.uuid + ".ActuallyCount.All", Integer.valueOf(count));
         this.fileBuilder.setValue(this.uuid + "." + count + ".type", type);
         this.fileBuilder.setValue(this.uuid + "." + count + ".taken", taken);
         this.fileBuilder.setValue(this.uuid + "." + count + ".takenBy", taker);
@@ -31,6 +31,20 @@ public class HistoryManager {
         this.fileBuilder.setValue(this.uuid + "." + count + ".banner", banner);
         this.fileBuilder.save();
     }
+    public void setAcctuallyCountMute(int count) {
+        this.fileBuilder.setValue(this.uuid + ".ActuallyCount.Mutes", count);
+        this.fileBuilder.save();
+    }
+    public void setAcctuallyCountBan(int count) {
+        this.fileBuilder.setValue(this.uuid + ".ActuallyCount.Bans", count);
+        this.fileBuilder.save();
+    }
+    public int getActuallyCountMute() {
+        return this.fileBuilder.getInt(this.uuid + ".ActuallyCount.Mutes");
+    }
+    public int getActuallyCountBan() {
+        return this.fileBuilder.getInt(this.uuid + ".ActuallyCount.Bans");
+    }
     public void setBannedStatus (boolean status, int count) {
         this.fileBuilder.setValue(this.uuid + "." + count + ".Banned", status);
         this.fileBuilder.save();
@@ -40,11 +54,11 @@ public class HistoryManager {
         this.fileBuilder.setValue(this.uuid + "." + count + ".takenBy", taker);
         this.fileBuilder.save();
     }
-    public int getActuallyCount() {
+    public int getActuallyCountAll() {
         if (this.fileBuilder.getString(this.uuid) == null) {
             return 0;
         }
-        return this.fileBuilder.getInt(this.uuid + ".actuallyCount");
+        return this.fileBuilder.getInt(this.uuid + ".ActuallyCount.All");
     }
     public boolean getTaken(int count) {
         return this.fileBuilder.getBoolean(this.uuid + "." + count + ".taken");

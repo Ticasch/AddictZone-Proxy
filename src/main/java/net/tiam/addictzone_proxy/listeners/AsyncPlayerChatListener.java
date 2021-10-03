@@ -30,7 +30,7 @@ public class AsyncPlayerChatListener implements Listener {
             if ((new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong()) <= (System.currentTimeMillis()) && (new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getExpiryLong() > 0) && (new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getPermanently() == false)) {
                 new MuteManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).deleteMute();
                 new AutoBanManager().setIpStatusMuted(iptrim, false);
-                new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).settaken(true, servername + " §7- §cAutomatisch§7", new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getActuallyCount());
+                new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).settaken(true, servername + " §7- §cAutomatisch§7", new HistoryManager(((ProxiedPlayer) e.getSender()).getName(), ((ProxiedPlayer) e.getSender()).getUniqueId().toString()).getActuallyCountAll());
             }
             if (!e.getMessage().startsWith("/")) {
                 System.out.println(prefix + "§7[§cMuted§7]§b " + e.getSender() + " §8➜ §7" + e.getMessage());

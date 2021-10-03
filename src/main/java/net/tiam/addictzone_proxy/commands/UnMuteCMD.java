@@ -53,7 +53,7 @@ public class UnMuteCMD extends Command {
                 } else if (new MuteManager(target, targetUUID.toString()).getMuted() == false) {
                     c.sendMessage(prefix + "Dieser Spieler ist nicht gemutet.");
                 } else {
-                    int actuallyCount = 0 + new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                    int actuallyCount = 0 + new HistoryManager(target, targetUUID.toString()).getActuallyCountAll();
                     c.sendMessage(prefix + "§7Du hast den Spieler §b" + target + " §7erfolgreich entmutet.");
                     new MuteManager(target, targetUUID.toString()).deleteMute();
                     new AutoBanManager().setIpStatusMuted(ip, false);

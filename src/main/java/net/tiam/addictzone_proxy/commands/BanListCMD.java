@@ -116,7 +116,7 @@ public class BanListCMD extends Command {
                 if (new BanManager(target, targetUUID.toString()).getBanned() && new BanManager(target, targetUUID.toString()).getExpiryLong() <= System.currentTimeMillis() && new BanManager(target, targetUUID.toString()).getExpiryLong() > 0 && new BanManager(target, targetUUID.toString()).getPermanently() == false) {
                     new BanManager(target, targetUUID.toString()).deleteBan();
                     new AutoBanManager().setIPStatusBanned(iptrim, false);
-                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCount());
+                    new HistoryManager(target, targetUUID.toString()).settaken(true, servername + "§7 - §cAutomatisch§7", new HistoryManager(target, targetUUID.toString()).getActuallyCountAll());
                 }
                 names = names + users + ":";
             }

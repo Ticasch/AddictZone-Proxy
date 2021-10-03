@@ -53,7 +53,7 @@ public class UnBanCMD extends Command {
                         if (new BanManager(target, targetUUID.toString()).getBanned() == false) {
                             c.sendMessage(prefix + "Dieser Spieler ist nicht gebannt.");
                         } else {
-                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                            int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCountAll();
                             c.sendMessage(prefix + "§7Du hast den Spieler §b" + target + " §7erfolgreich entbannt.");
                             new BanManager(target, targetUUID.toString()).deleteBan();
                             new AutoBanManager().setIPStatusBanned(ip, false);

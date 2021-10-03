@@ -84,8 +84,10 @@ public class TMuteCMD extends Command {
                 format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
                 String expiry = format.format(new Date(System.currentTimeMillis() + longExpiry));
                 long banexpiry = System.currentTimeMillis() + longExpiry;
-                int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCount();
+                int actuallyCount = new HistoryManager(target, targetUUID.toString()).getActuallyCountAll();
                 int newCount = actuallyCount + 1;
+                int actuallyCountMute = new HistoryManager(target, targetUUID.toString()).getActuallyCountMute();
+                int newCountMute = actuallyCountMute + 1;
                 if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
                     c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage muten.");
                     return;
@@ -93,6 +95,7 @@ public class TMuteCMD extends Command {
                 new MuteManager(target, targetUUID.toString()).setMuted(iptrim, reason, expiry, banexpiry, MUTER, true, false);
                 new AutoBanManager().setIpStatusMuted(iptrim, true);
                 new HistoryManager(target, targetUUID.toString()).setHistory(iptrim, reason, expiry, banexpiry, MUTER, "nobody", "§c§lMute", false, String.valueOf(newCount));
+                new HistoryManager(target, targetUUID.toString()).setAcctuallyCountMute(newCountMute);
                 for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                     if (all.hasPermission(servername + ".ban.notify")) {
                         all.sendMessage(line);
