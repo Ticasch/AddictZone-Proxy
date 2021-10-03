@@ -144,7 +144,6 @@ public class HistoryCMD extends Command {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
