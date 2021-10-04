@@ -1,16 +1,18 @@
 package net.tiam.addictzone_proxy.listeners;
 
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.tiam.addictzone_proxy.MainClass;
-import net.tiam.addictzone_proxy.managers.AutoBanManager;
-import net.tiam.addictzone_proxy.managers.BanManager;
-import net.tiam.addictzone_proxy.managers.HistoryManager;
-import net.tiam.addictzone_proxy.managers.MuteManager;
+import net.tiam.addictzone_proxy.managers.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AsyncPlayerChatListener implements Listener {
     String servername = MainClass.ServerName;
@@ -61,5 +63,27 @@ public class AsyncPlayerChatListener implements Listener {
             }
         }
     }
-
+    @EventHandler
+    public void onBlock(ChatEvent e) throws IOException {
+        if (e.isCancelled())
+            return;
+        CommandSender c = (CommandSender) e.getSender();
+        CommandSender console = ProxyServer.getInstance().getConsole();
+        String message = e.getMessage().replace("!", "i").replace("1", "i").replace(".", "").replace(",", "").replace("#", "").replace("&", "");
+        String[] msg = message.split(" ");
+        for (int i = 0; i != msg.length; i++) {
+            if (!c.hasPermission(servername + ".ChatFilter.Bypass") && new ChatFilterManager().getList().contains(msg[i].toLowerCase())) {
+                e.setCancelled(true);
+                c.sendMessage(prefix + "Die Wortwahl §b" + msg[i] + " §7ist nicht erlaubt.");
+                for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
+                    if (all.hasPermission(servername + ".ChatFilter.Notify")) {
+                        all.sendMessage(prefix + "Der Spieler §b" + c.getName() + " §7hatte folgende");
+                        all.sendMessage(prefix + "Wortwahl in seiner Nachricht: §B" + msg[i]);
+                    }
+                }
+                console.sendMessage(prefix + "Der Spieler §b" + c.getName() + " §7hatte folgenden Begriff");
+                console.sendMessage(prefix + "in seiner Nachricht: §B" + msg[i]);
+            }
+        }
+    }
 }

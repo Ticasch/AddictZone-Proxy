@@ -303,7 +303,7 @@ public class HistoryCMD extends Command {
                             c.sendMessage(line);
                             c.sendMessage(prefix + "History von §b" + target + " §7(§b" + actuallyCount + " §7Einträge)");
                             c.sendMessage(prefix + "Seite §b" + arg + " §7von §b" + getPagesBanned(target, targetUUID.toString()));
-                            c.sendMessage(prefix + "Sortierung nach: §bAlles");
+                            c.sendMessage(prefix + "Sortierung nach: §4§lBanns");
                             MsgBanned(c, arg, target, targetUUID.toString());
                             TextComponent pageSelect = new TextComponent(prefix);
                             TextComponent before = new TextComponent("§bVorherige Seite");
