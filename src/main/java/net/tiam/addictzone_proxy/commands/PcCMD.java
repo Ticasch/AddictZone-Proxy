@@ -11,7 +11,7 @@ public class PcCMD extends Command {
         super("Pc");
     }
     String prefix = MainClass.Prefix;
-    String noperm = prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     @Override
     public void execute(CommandSender sender, String[] args) {

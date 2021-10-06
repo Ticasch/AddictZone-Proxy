@@ -94,10 +94,11 @@ public class TBanCMD extends Command {
                 int actuallyCountBan = new HistoryManager(target, targetUUID.toString()).getActuallyCountBan();
                 int newCountBan = actuallyCountBan + 1;
                 String TBanKickMsg = "§9§lAddictZone §8➜ §4§lGEBANNT\n\n§7Von: §b" + BANNER + "\n§7Grund: §b" + reason + "\n§7Dauer: §b" + expiry + "\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum\n§7Discord-Verify-Server: §bVerify.AddictZone.eu";
-                if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
-                    c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage bannen.");
-                    return;
-                }
+                if (c instanceof ProxiedPlayer)
+                    if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
+                        c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage bannen.");
+                        return;
+                    }
                 banManager.setBanned(iptrim, reason, expiry, banexpiry, BANNER, true, false);
                 new AutoBanManager().setIPStatusBanned(iptrim, true);
                 new HistoryManager(target, targetUUID.toString()).setHistory(iptrim, reason, expiry, banexpiry, banner, "nobody", "§4§lBann", false, String.valueOf(newCount));

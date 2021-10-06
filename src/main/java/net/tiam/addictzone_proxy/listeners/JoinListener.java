@@ -58,7 +58,7 @@ public class JoinListener implements Listener {
                 }
             }
         }
-        if (!target.hasPermission(servername + ".wartung.bypass") && new SettingsManager().getBypass(target.getUniqueId().toString()) == false && new SettingsManager().getWartung() == true) {
+        if (!target.hasPermission(servername + ".wartung.bypass") && !new WartungManager().getBypassedUsers().contains(target.getUniqueId().toString()) && new SettingsManager().getWartung() == true) {
             e.setCancelled(true);
             target.disconnect(MainClass.kickmessage);
         }

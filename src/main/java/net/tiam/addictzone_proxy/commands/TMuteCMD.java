@@ -88,10 +88,11 @@ public class TMuteCMD extends Command {
                 int newCount = actuallyCount + 1;
                 int actuallyCountMute = new HistoryManager(target, targetUUID.toString()).getActuallyCountMute();
                 int newCountMute = actuallyCountMute + 1;
-                if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
-                    c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage muten.");
-                    return;
-                }
+                if (c instanceof ProxiedPlayer)
+                    if (permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) * day < longExpiry) {
+                        c.sendMessage(prefix + "Du kannxt maximal §b" + permittedTimePermission(((ProxiedPlayer) c).getUniqueId()) + " §7Tage muten.");
+                        return;
+                    }
                 new MuteManager(target, targetUUID.toString()).setMuted(iptrim, reason, expiry, banexpiry, MUTER, true, false);
                 new AutoBanManager().setIpStatusMuted(iptrim, true);
                 new HistoryManager(target, targetUUID.toString()).setHistory(iptrim, reason, expiry, banexpiry, MUTER, "nobody", "§c§lMute", false, String.valueOf(newCount));

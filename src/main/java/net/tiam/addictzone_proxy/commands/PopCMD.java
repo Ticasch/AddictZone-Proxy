@@ -10,7 +10,7 @@ import java.io.Console;
 
 public class PopCMD extends Command {
     String prefix = MainClass.Prefix;
-    String noperm = prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     String SENDER;
     public PopCMD() {

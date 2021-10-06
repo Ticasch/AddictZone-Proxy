@@ -11,7 +11,7 @@ import net.tiam.addictzone_proxy.MainClass;
 public class AdminChatCMD extends Command {
     String servername = MainClass.ServerName;
     String prefix = MainClass.Prefix;
-    String noperm = MainClass.Prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String SENDER = servername;
     public AdminChatCMD() {
     super("Ac");

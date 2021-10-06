@@ -20,7 +20,7 @@ public class YouTuberCMD extends Command {
         super("youtuber");
     }
     String prefix = MainClass.Prefix;
-    String noPerm = prefix + MainClass.NoPerm;
+    String noPerm = MainClass.NoPerm;
     String line = MainClass.Line;
 
     @Override

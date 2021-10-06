@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class HistoryCMD extends Command {
     String prefix = MainClass.Prefix;
     String line = MainClass.Line;
-    String noperm = prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
 
     public HistoryCMD(){

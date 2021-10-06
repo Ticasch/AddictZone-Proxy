@@ -8,7 +8,7 @@ import net.tiam.addictzone_proxy.MainClass;
 
 public class PSudoCMD extends Command {
     String prefix = MainClass.Prefix;
-    String noperm = prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     public PSudoCMD() {
         super("psudo");

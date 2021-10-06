@@ -3,6 +3,10 @@ package net.tiam.addictzone_proxy.managers;
 import net.tiam.addictzone_proxy.utilities.FileBuilder;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class SettingsManager {
 
@@ -31,18 +35,11 @@ public class SettingsManager {
         return this.fileBuilder.getInt("Ranked-Slots");
     }
     public void setWartung(boolean b) {
-        this.fileBuilder.setValue("Wartung.Status", b);
+        this.fileBuilder.setValue("Wartung", b);
         this.fileBuilder.save();
     }
     public boolean getWartung() {
-        return this.fileBuilder.getBoolean("Wartung.Status");
-    }
-    public void setBypass(String uuid, boolean bypass) {
-        this.fileBuilder.setValue("Wartung.ByPass." + uuid, bypass);
-        this.fileBuilder.save();
-    }
-    public boolean getBypass(String uuid) {
-        return this.fileBuilder.getBoolean("Wartung.ByPass." + uuid);
+        return this.fileBuilder.getBoolean("Wartung");
     }
     public void setDefaultMOTD(String motd) {
         this.fileBuilder.setValue("MOTD.Default", motd);

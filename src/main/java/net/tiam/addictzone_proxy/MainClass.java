@@ -21,7 +21,7 @@ public final class MainClass extends Plugin {
 
     public static String ServerName = "AddictZone";
     public static String Prefix = "§9§lAddictZone §8➜ §7";
-    public static String NoPerm = "§7Dazu hast du keine Rechte!";
+    public static String NoPerm =  Prefix + "§7Dazu hast du keine Rechte!";
     public static String Line = "§8§m--------------------------------------------------";
     public static String kickmessage = "§9§lAddictZone §7- §6§lWartungen\n\n§7Unser Netzwerk befindet sich derzeit in der §cAufbauphase§7.\n§7Bei Fragen wende dich gerne an unseren §6Support§7.\n\n§7TeamSpeak: §bAddictZone.net\n§7Forum: §bhttps://AddictZone.net/Forum";
 
@@ -61,6 +61,7 @@ public final class MainClass extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new BanListCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new MuteListCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new OnlineCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new ChatFilterCMD());
         ProxyServer.getInstance().getScheduler().schedule(this, () -> {
             for (ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
                 new TablistManager().setTablist(all);

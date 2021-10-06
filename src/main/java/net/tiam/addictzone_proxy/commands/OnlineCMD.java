@@ -49,7 +49,9 @@ public class OnlineCMD extends Command {
                 c.sendMessage(prefix + "Du hast keine Rechte, zu sehen wieviele Spieler registriert sind.");
                 return;
             }
-            String countString = NumberFormat(globalJoins);
+            String count = NumberFormat(globalJoins);
+            String countReplaced = count.replace(".", "_").replace(",", ";");
+            String countString = countReplaced.replace("_", ",").replace(";", ".");
             c.sendMessage(prefix + "Es sind insgesammt §b" + countString + " §7Spieler registriert.");
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("liste") || args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("Spieler")) {
@@ -164,12 +166,11 @@ public class OnlineCMD extends Command {
     public void getList(CommandSender c, int page) {
         try {
             globalJoins = new UserManager("", "").getUsers().size();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
+            String count = NumberFormat(globalJoins);
+            String countReplaced = count.replace(".", "_").replace(",", ";");
+            String countString = countReplaced.replace("_", ",").replace(";", ".");
             c.sendMessage(line);
-            c.sendMessage(prefix + "Insgesammt sind §b" + new BanManager("", "").getBannedUsers().size() + " §7Spieler registriert.");
+            c.sendMessage(prefix + "Insgesammt sind §b" + countString + " §7Spieler registriert.");
             c.sendMessage(prefix + "Userliste Seite §b" + page + " §7von §b" + getPages());
             Msg(c, page);
         } catch (IOException e) {
@@ -213,8 +214,7 @@ public class OnlineCMD extends Command {
     }
     public String NumberFormat(int count) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###.##");
-        String format = decimalFormat.format(count);
-        return format.replace(".", "_").replace(",", ";").replace("_", ",").replace(";", ".");
+        return decimalFormat.format(count);
     }
     public static boolean isInteger(String strNum) {
         try {

@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class PBanCMD extends Command {
     String prefix = MainClass.Prefix;
-    String noperm = prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     String line = MainClass.Line;
     String BANNER;

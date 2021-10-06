@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class SetSlotsCMD extends Command {
     String prefix = MainClass.Prefix;
-    String noperm = prefix + MainClass.NoPerm;
+    String noperm = MainClass.NoPerm;
     String servername = MainClass.ServerName;
     public SetSlotsCMD() {
         super("setslots");

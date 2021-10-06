@@ -15,14 +15,6 @@ public class ChatFilterManager {
 
     public ChatFilterManager() throws IOException {
     }
-    public void setWord(String word) {
-        this.fileBuilder.setValue(word, "");
-        this.fileBuilder.save();
-    }
-    public void removeWord(String word) {
-        this.fileBuilder.setValue(word, null);
-        this.fileBuilder.save();
-    }
     public ArrayList<String> getList() {
         ArrayList<String> list = new ArrayList<>(this.fileBuilder.getKeys());
         return list;
