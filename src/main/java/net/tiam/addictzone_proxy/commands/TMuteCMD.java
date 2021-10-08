@@ -70,7 +70,7 @@ public class TMuteCMD extends Command {
             }
             String[] ips = ip.split(":");
             String iptrim = ips[0].replace('.', '_').replace("/", "");
-            int time = Integer.valueOf(args[1].substring(0, args[1].length() - 1));
+            int time = Integer.parseInt(args[1].substring(0, args[1].length() - 1));
             long min = 1000 * 60;
             long hour = 1000 * 60 * 60;
             long day = 1000 * 60 * 60 * 24;

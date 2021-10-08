@@ -57,9 +57,38 @@ public class WartungCMD extends Command {
             } else {
                 c.sendMessage(prefix + "Benutze: §b/Wartung Status");
             }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("bypass")) {
+                if (args[1].equalsIgnoreCase("list") || args[1].equalsIgnoreCase("liste")) {
+                    try {
+                        if (new WartungManager().getBypassedUsers().size() > 0) {
+                            getBypassedUsers(c, 1);
+                            TextComponent pageSelect = new TextComponent(prefix);
+                            TextComponent next = new TextComponent("§bNächste Seite");
+                            next.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/Wartung Bypass List " + (2)));
+                            if (getPages() > 1) {
+                                pageSelect.addExtra("§7Vorherige Seite §8| ");
+                                pageSelect.addExtra(next);
+                            } else {
+                                pageSelect.addExtra("§7Vorherige Seite §8| §7Nächste Seite");
+                            }
+                            c.sendMessage(pageSelect);
+                            c.sendMessage(line);
+                        } else {
+                            c.sendMessage(prefix + "Derzeit sind keine Spieler auf der Wartung-ByPass Liste.");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    c.sendMessage(prefix + "Benutze: §b/Wartung Bypass §7<§bliste§7|§badd§7|§bremove§7>");
+                }
+            } else {
+                c.sendMessage(prefix + "Benutze: §b/Wartung Bypass §7<§bliste§7|§badd§7|§bremove§7>");
+            }
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("Bypass")) {
-                if (!c.hasPermission(servername + ".Wartung.Bypass")) {
+                if (!c.hasPermission(servername + ".Wartung.Bypass.Edit")) {
                     c.sendMessage(prefix + "Du hast keine Rechte, die Watungs-ByPass Liste zu editieren.");
                     return;
                 }
@@ -91,9 +120,9 @@ public class WartungCMD extends Command {
                             c.sendMessage(prefix + "Dieser Spieler ist nicht auf der Wartungs-ByPass Liste.");
                             return;
                         }
-                        new WartungManager().getBypassedUsers().remove(targetUUID.toString());
+                        new WartungManager().setName(targetUUID.toString(), null);
                         c.sendMessage(prefix + "Du hast §b" + target + " §7von der Wartungs-ByPass Liste entfernt.");
-                    } else if (args[1].equalsIgnoreCase("list")) {
+                    } else if (args[1].equalsIgnoreCase("list") || args[1].equalsIgnoreCase("liste")) {
                         try {
                             if (new WartungManager().getBypassedUsers().size() > 0) {
                                 if (!isInteger(args[2])) {
@@ -135,13 +164,13 @@ public class WartungCMD extends Command {
                             e.printStackTrace();
                         }
                     } else {
-                        c.sendMessage(prefix + "Benutze: §b/Wartung Bypass §7<§bliste§7|§badd§7|§bremove§7> <§bSpieler§7>");
+                        c.sendMessage(prefix + "Benutze: §b/Wartung Bypass §7<§bliste§7|§badd§7|§bremove§7>");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                c.sendMessage(prefix + "Benutze: §b/Wartung §7<§bStatus§7|§bBypass§7> <§bSpieler§7>");
+                c.sendMessage(prefix + "Benutze: §b/Wartung §7<§bStatus§7|§bBypass§7>");
             }
         } else {
             c.sendMessage(prefix + "Benutze: §b/Wartung §7<§bStatus§7|§bBypass§7>");

@@ -20,7 +20,6 @@ public class WartungManager {
     }
     public ArrayList<String> getBypassedUsers() {
         ArrayList<String> list = new ArrayList<>(this.fileBuilder.getKeys());
-        this.fileBuilder.save();
         return list;
     }
 }
